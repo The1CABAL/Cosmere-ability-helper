@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Draw Steel — Combat Reminders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <nav class="app-tabs" role="tablist" aria-label="Main views">
+      <button type="button" class="app-tab is-active" role="tab" id="tabSheet" aria-selected="true" aria-controls="viewSheet">Sheet</button>
+      <button type="button" class="app-tab" role="tab" id="tabNotes" aria-selected="false" aria-controls="viewNotes">Notes</button>
+      <button type="button" class="app-tab" role="tab" id="tabRules" aria-selected="false" aria-controls="viewRules">Rules</button>
+    </nav>
+
+    <div id="viewSheet" class="view-panel" role="tabpanel">
+    <header class="top">
+      <div class="brand">
+        <h1>Draw Steel — Combat sheet</h1>
+        <p class="tagline">Reactions, triggers, and abilities you actually use at the table</p>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="btn ghost" id="btnPlay" aria-pressed="false">Play mode</button>
+        <button type="button" class="btn" id="btnEdit" aria-pressed="true">Edit</button>
+        <button type="button" class="btn danger ghost" id="btnResetRound" title="Clear &quot;used this round&quot; flags">New round</button>
+      </div>
+    </header>
+
+    <section class="panel reminders" id="panelReminders">
+      <h2>At-a-glance</h2>
+      <div class="grid-2">
+        <label class="field">
+          <span class="label">Heroic resource</span>
+          <input type="text" id="heroicName" placeholder="e.g. Focus, Drama, Wrath…" />
+        </label>
+        <label class="field">
+          <span class="label">Current (optional)</span>
+          <input type="number" id="heroicCurrent" min="0" step="1" placeholder="0" />
+        </label>
+      </div>
+
+      <div class="tracker-block edit-only">
+        <h3 class="subhead">Combat resources</h3>
+        <div class="tracker-rows">
+          <label class="tracker-row">
+            <span class="tracker-label">Stamina</span>
+            <div class="inline tracker-inputs">
+              <input type="number" id="staminaCurrent" min="0" step="1" placeholder="current" />
+              <span class="sep">/</span>
+              <input type="number" id="staminaMax" min="0" step="1" placeholder="max" />
+            </div>
+          </label>
+          <label class="tracker-row">
+            <span class="tracker-label">Recoveries</span>
+            <div class="inline tracker-inputs">
+              <input type="number" id="recoveriesCurrent" min="0" step="1" placeholder="remaining" />
+              <span class="sep">/</span>
+              <input type="number" id="recoveriesMax" min="0" step="1" placeholder="max" />
+            </div>
+          </label>
+          <label class="tracker-row">
+            <span class="tracker-label">Surges</span>
+            <div class="inline tracker-inputs">
+              <input type="number" id="surgesCurrent" min="0" step="1" placeholder="current" />
+            </div>
+          </label>
+          <label class="tracker-row">
+            <span class="tracker-label">Fate points</span>
+            <div class="inline tracker-inputs">
+              <input type="number" id="fateCurrent" min="0" step="1" placeholder="current" />
+            </div>
+          </label>
+          <label class="tracker-row">
+            <span class="tracker-label">Victories</span>
+            <div class="inline tracker-inputs">
+              <input type="number" id="victoriesCurrent" min="0" step="1" placeholder="current" />
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <label class="field">
+        <span class="label">Victory triggers & spending</span>
+        <textarea id="victoryNotes" rows="2" class="textarea-autosize" placeholder="Victories (The Basics): start at 0. +1 when you survive combat with objectives met; Director may adjust. Big noncombat wins can earn Victories. Finishing a respite converts Victories to XP and resets them to 0. Note class/kit spends that use Victories here."></textarea>
+      </label>
+      <label class="field">
+        <span class="label">Passive / always-on reminders</span>
+        <textarea id="passiveNotes" rows="2" class="textarea-autosize" placeholder="Always-on traits: ancestry features, kit proficiencies, languages, exploration or domain passives—anything that does not use a main action or maneuver row (see Background and your class in the Heroes rules)."></textarea>
+      </label>
+    </section>
+
+    <section class="panel" id="panelAbilities">
+      <div class="section-head">
+        <h2>Abilities</h2>
+        <div class="section-head-actions edit-only">
+          <button type="button" class="btn small ghost" id="btnConduitPreset" title="Fills Piety, notes, and a 1st-level Conduit quick-build list from data-md rules (confirm if you already have data)">Load Conduit preset</button>
+          <button type="button" class="btn small" id="btnAddAbility">+ Add ability</button>
+        </div>
+      </div>
+      <p class="hint edit-only">Tip (Combat): you can use one triggered action per round when its trigger occurs; free triggered actions do not count toward that limit. Mark “Uses non-free triggered” for abilities that share the one-per-round non-free triggered budget.</p>
+      <div id="abilityList" class="ability-list"></div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-toolbar">
+        <button type="button" class="btn ghost small" id="btnChooseBackup">Choose file for auto-backup…</button>
+        <button type="button" class="btn ghost danger small" id="btnStopBackup" hidden>Stop file backup</button>
+        <button type="button" class="btn ghost small" id="btnDownloadOnce" title="Save a copy without linking a file">Download JSON</button>
+        <label class="btn ghost small file-btn">
+          Import JSON
+          <input type="file" id="importFile" accept="application/json,.json" hidden />
+        </label>
+        <span class="saved" id="saveStatus" aria-live="polite"></span>
+      </div>
+      <p class="footer-hint" id="backupStatus" aria-live="polite"></p>
+    </footer>
+    </div>
+
+    <div id="viewNotes" class="view-panel is-hidden" role="tabpanel" aria-hidden="true">
+      <section class="notes-workspace panel notes-panel">
+        <header class="notes-top">
+          <h2 class="notes-title">Scratch pad</h2>
+          <p class="notes-sub">Type like a document, or switch to Ink and draw with finger or stylus (pressure adjusts line weight). Use Erase mode or the stylus eraser / barrel button to rub out ink. Pages are saved automatically—pick a day’s page or add another for the same session.</p>
+        </header>
+        <div class="notes-canvas-bar">
+          <label class="field notes-canvas-field">
+            <span class="label">Page</span>
+            <select id="scratchCanvasSelect" class="scratch-canvas-select"></select>
+          </label>
+          <button type="button" class="btn small" id="btnNewScratchCanvas">New page</button>
+          <button type="button" class="btn ghost small" id="btnRenameScratchCanvas">Rename…</button>
+          <button type="button" class="btn ghost danger small" id="btnDeleteScratchCanvas">Delete page</button>
+        </div>
+        <div class="notes-toolbar">
+          <div class="notes-mode" role="group" aria-label="Notes mode">
+            <button type="button" class="btn small" id="btnNotesType" aria-pressed="true">Type</button>
+            <button type="button" class="btn small ghost" id="btnNotesInk" aria-pressed="false">Ink</button>
+          </div>
+          <div class="notes-mode ink-only ink-pen-erase" role="group" aria-label="Pen or erase">
+            <button type="button" class="btn small" id="btnInkPen" aria-pressed="true">Pen</button>
+            <button type="button" class="btn small ghost" id="btnInkErase" aria-pressed="false">Erase</button>
+          </div>
+          <label class="notes-tool ink-only">
+            <span class="notes-tool-label">Color</span>
+            <input type="color" id="inkColor" value="#1a1a1a" />
+          </label>
+          <label class="notes-tool ink-only">
+            <span class="notes-tool-label">Size</span>
+            <input type="range" id="inkWidth" min="1" max="28" value="4" />
+          </label>
+          <button type="button" class="btn ghost danger small ink-only" id="btnInkClear">Clear ink</button>
+        </div>
+        <div class="notes-page" id="notesPage">
+          <textarea
+            id="scratchNotesTextarea"
+            class="scratch-text"
+            spellcheck="true"
+            placeholder="Session recap, loot, NPC quirks—optional; use the Rules tab to search Steel Compendium markdown for spellings and mechanics."
+          ></textarea>
+          <canvas id="scratchInkCanvas" class="scratch-canvas" width="800" height="2400" aria-label="Handwriting canvas"></canvas>
+        </div>
+      </section>
+    </div>
+
+    <div id="viewRules" class="view-panel is-hidden" role="tabpanel" aria-labelledby="tabRules" aria-hidden="true">
+      <section class="panel rules-search">
+        <header class="rules-search-head">
+          <h2>Rules search</h2>
+          <p class="hint rules-search-hint">
+            Search Markdown from
+            <a href="https://github.com/SteelCompendium/data-md" target="_blank" rel="noopener noreferrer">SteelCompendium/data-md</a>
+            (community Draw Steel rules data; not affiliated with MCDM). Use GitHub online, or link a local <code class="rules-code">git clone</code> of that repo to search file names and full text on disk (no GitHub code-search rate limits). Pick a result to load the document.
+          </p>
+        </header>
+        <div class="rules-toolbar">
+          <label class="field rules-search-field">
+            <span class="label">Search</span>
+            <div class="inline rules-search-inline">
+              <input type="search" id="rulesSearchInput" placeholder="Keyword, ability name, folder…" autocomplete="off" />
+              <button type="button" class="btn" id="btnRulesSearch">Search</button>
+            </div>
+          </label>
+          <button type="button" class="btn ghost small" id="btnRulesChooseFolder">Local data-md folder…</button>
+          <button type="button" class="btn ghost small" id="btnRulesUseGithub" hidden>Use GitHub online</button>
+          <button type="button" class="btn ghost small" id="btnRulesRefreshIndex" title="Clear cached file list and re-download from GitHub">Refresh file list</button>
+        </div>
+        <div class="rules-options">
+          <label class="rules-bestiary-checkbox">
+            <input type="checkbox" id="rulesIncludeBestiary" />
+            <span>Include bestiary content</span>
+          </label>
+        </div>
+        <p id="rulesSourceLine" class="hint rules-source-line" aria-live="polite"></p>
+        <p id="rulesSearchStatus" class="hint rules-search-status" role="status"></p>
+        <div class="rules-split">
+          <ul id="rulesResults" class="rules-results" aria-label="Search results"></ul>
+          <article id="rulesDetail" class="rules-detail prose" aria-live="polite"></article>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

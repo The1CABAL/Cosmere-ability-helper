@@ -1,0 +1,19 @@
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs / env (if you add tooling later)
+*.log
+.env
+.env.*
+
+# Local clone of Steel Compendium rules (clone separately or use Rules tab + GitHub)
+data-md-main/
