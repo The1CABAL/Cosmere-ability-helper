@@ -1,0 +1,15 @@
+.git
+.gitignore
+.idea
+.vscode
+*.pdf
+raw/
+data-md-main/
+tools/
+README.md
+data/SCHEMA.md
+*.log
+.env
+.env.*
+Dockerfile
+.dockerignore
