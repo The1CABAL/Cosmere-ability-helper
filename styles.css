@@ -1051,3 +1051,172 @@ body:not(.play-mode) .play-only-inline {
   border: 1px solid var(--border);
   padding: 0.35rem 0.45rem;
 }
+
+/* ---------------------------------------------------------------------------
+   Print / Export to PDF
+   A light, ink-friendly rendering of the character sheet. Triggered by the
+   "Print / PDF" button, which switches to Play mode and expands every
+   collapsible section before opening the browser print dialog.
+   --------------------------------------------------------------------------- */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1.35;
+  }
+
+  body {
+    font-size: 10.5pt;
+  }
+
+  .app {
+    max-width: none;
+    margin: 0;
+  }
+
+  /* Hide interactive chrome and the non-sheet views. */
+  .app-tabs,
+  .top-actions,
+  .footer,
+  #viewNotes,
+  #viewRules,
+  .hint,
+  .section-head-actions,
+  .card-actions,
+  .resource-track-bar .btn,
+  .tagline.disclaimer,
+  button {
+    display: none !important;
+  }
+
+  .top {
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1.5px solid #000;
+  }
+
+  .brand h1 {
+    font-size: 1.25rem;
+  }
+
+  .tagline {
+    color: #555 !important;
+  }
+
+  /* Flatten panels and ability cards onto white; keep them whole across pages. */
+  .panel,
+  .card,
+  .sheet-section {
+    background: #fff !important;
+    border: 1px solid #bbb !important;
+    border-radius: 6px;
+    box-shadow: none !important;
+    color: #111 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 0.6rem;
+  }
+
+  /* Force collapsible sections open and treat the summary as a heading. */
+  details[data-collapsible] {
+    display: block;
+  }
+
+  .sheet-section-body {
+    display: block !important;
+  }
+
+  .sheet-section > .sheet-summary {
+    cursor: default;
+    background: transparent !important;
+  }
+
+  .sheet-section > .sheet-summary::after,
+  .sheet-section > .sheet-summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  .sheet-summary-title {
+    color: #111 !important;
+  }
+
+  .sheet-summary-hint {
+    color: #555 !important;
+  }
+
+  h2,
+  h3,
+  .subhead,
+  .label,
+  .tracker-label,
+  .card-title,
+  .resource-track-bar .name {
+    color: #111 !important;
+  }
+
+  /* Render form fields as plain printed text rather than input chrome. */
+  input,
+  select,
+  textarea {
+    background: #fff !important;
+    color: #111 !important;
+    border: none !important;
+    border-bottom: 1px solid #aaa !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0.05rem 0 !important;
+    -webkit-appearance: none;
+    appearance: none;
+    resize: none;
+    overflow: visible;
+  }
+
+  textarea {
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    padding: 0.2rem 0.3rem !important;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+
+  /* Resource strip and defense chips read as static values. */
+  .resource-track-bar .track,
+  .def-chip {
+    color: #111 !important;
+    background: #fff !important;
+    border-color: #aaa !important;
+  }
+
+  /* Ability badges: keep the outline, drop the fill. */
+  .badge {
+    color: #111 !important;
+    background: #fff !important;
+    border: 1px solid #999 !important;
+  }
+
+  .meta,
+  .trigger-line,
+  .notes {
+    color: #222 !important;
+  }
+
+  /* Omit empty single-field rows so the printout shows only filled-in data.
+     Scoped to .field (one input/textarea each) so attributes/skills always
+     print even at 0. Guarded by :has support; degrades to showing all fields. */
+  .field:has(> input:placeholder-shown),
+  .field:has(> textarea:placeholder-shown) {
+    display: none !important;
+  }
+}

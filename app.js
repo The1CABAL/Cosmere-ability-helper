@@ -1838,6 +1838,47 @@ function exportJson() {
   URL.revokeObjectURL(a.href);
 }
 
+function getActiveAppView() {
+  if (!document.getElementById("viewSheet")?.classList.contains("is-hidden")) return "sheet";
+  if (!document.getElementById("viewNotes")?.classList.contains("is-hidden")) return "notes";
+  if (!document.getElementById("viewRules")?.classList.contains("is-hidden")) return "rules";
+  return "sheet";
+}
+
+// Print a clean, paper-friendly copy of the sheet. Renders in Play mode (formatted
+// ability cards + resource strip read better than the edit forms) with every
+// collapsible section expanded, then restores the prior UI state afterward.
+function printSheet() {
+  const prevView = getActiveAppView();
+  const prevPlay = document.body.classList.contains("play-mode");
+  const sections = Array.from(
+    document.querySelectorAll("#viewSheet details[data-collapsible]")
+  );
+  const prevOpen = sections.map((s) => s.open);
+
+  if (prevView !== "sheet") setAppView("sheet");
+  if (!prevPlay) setPlayMode(true);
+  sections.forEach((s) => (s.open = true));
+
+  let restored = false;
+  const restore = () => {
+    if (restored) return;
+    restored = true;
+    window.removeEventListener("afterprint", restore);
+    sections.forEach((s, i) => (s.open = prevOpen[i]));
+    if (!prevPlay) setPlayMode(false);
+    if (prevView !== "sheet") setAppView(prevView);
+  };
+  window.addEventListener("afterprint", restore);
+
+  // Give the DOM a frame to lay out the re-rendered (play-mode) sheet before printing.
+  requestAnimationFrame(() => {
+    window.print();
+    // Safety net in case a browser doesn't fire afterprint.
+    setTimeout(restore, 1000);
+  });
+}
+
 function importJson(file) {
   const reader = new FileReader();
   reader.onload = () => {
@@ -1870,6 +1911,7 @@ document.getElementById("btnWarriorPreset").addEventListener("click", applyWarri
 document.getElementById("btnPlay").addEventListener("click", () => setPlayMode(true));
 document.getElementById("btnEdit").addEventListener("click", () => setPlayMode(false));
 document.getElementById("btnResetRound").addEventListener("click", resetRound);
+document.getElementById("btnPrint").addEventListener("click", printSheet);
 document.getElementById("btnChooseBackup").addEventListener("click", () => void chooseBackupFile());
 document.getElementById("btnStopBackup").addEventListener("click", () => void stopBackupFile());
 document.getElementById("btnDownloadOnce").addEventListener("click", exportJson);
