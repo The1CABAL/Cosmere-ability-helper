@@ -60,8 +60,9 @@ Attribute abbreviations: `STR SPD INT WIL AWA PRE`. Defenses: `phys cog spir`.
   "src": "warrior",                   // path/order/surge/general key
   "kind": "talent",                   // talent | action | reaction | form
   "key": false,                       // true = key talent of its path/order
-  "tier": 1,                          // rank/tier where gained (0 = general/always)
-  "pre": "Discipline 3+",             // prerequisite, coded; "" if none
+  "tier": 1,                          // rank/tier where gained (0 = general/always; 1 for path specialty talents — real gating is in `pre` + tree order)
+  "spec": "Investigator",             // optional: specialty within the path (Investigator/Spy/Thief, etc.); omitted for general/key talents
+  "pre": "Discipline 3+",             // prerequisite, coded; "" if the only prereq is the preceding talent
   "act": "rea",                       // action-economy code (table above)
   "cost": "1F",                       // resource cost code
   "rng": "reach",                     // range code

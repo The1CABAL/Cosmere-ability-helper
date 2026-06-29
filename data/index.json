@@ -1,6 +1,6 @@
 {
   "dataset": "cosmere-rpg-stormlight",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Mechanics-only, paraphrased index of player options. Not affiliated with Brandon Sanderson, Dragonsteel, or Brotwise Games. See SCHEMA.md.",
   "files": {
     "system": "system.json",
@@ -10,7 +10,7 @@
     "abilities": "abilities.json"
   },
   "coverage": {
-    "complete": ["system (with skill use/examples)", "origins (overview)", "paths (overview)", "surges (base mechanic + full talent trees)", "general combat actions/reactions", "heroic key talents (6)"],
-    "todo": ["full heroic path talent trees", "radiant order (path) talents", "ancestry/form talents", "items"]
+    "complete": ["system (with skill use/examples)", "origins (overview)", "paths (overview)", "surges (base mechanic + full talent trees)", "general combat actions/reactions", "heroic path talent trees (all 6: key + 3 specialties each)"],
+    "todo": ["radiant order (path) talents", "ancestry/form talents", "items"]
   }
 }

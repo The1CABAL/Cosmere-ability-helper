@@ -566,7 +566,7 @@ function buildRulesRecordsFromData(data) {
   if (Array.isArray(abilities)) {
     for (const a of abilities) {
       const kind = a.key ? `${a.kind} (key)` : a.kind || "";
-      push(a.name, [a.src, kind].filter(Boolean).join(" · "), abilityToBody(a));
+      push(a.name, [a.src, a.spec, kind].filter(Boolean).join(" · "), abilityToBody(a));
     }
   }
 
