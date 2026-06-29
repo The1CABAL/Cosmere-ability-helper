@@ -44,10 +44,10 @@ Attribute abbreviations: `STR SPD INT WIL AWA PRE`. Defenses: `phys cog spir`.
 
 ## Files
 
-- `system.json` — attributes, defenses, resources, skills, action economy. Pure facts.
+- `system.json` — attributes, defenses, resources, skills, action economy. Pure facts. Each skill also carries `use` (what it tests), `examples` (short Gain-Advantage / application bullets), and `combat` (a skill-specific combat/rest action where one exists) — all in our own terse words.
 - `origins.json` — ancestries (Human, Singer) and their mechanical hooks; cultures.
 - `paths.json` — the 6 heroic paths and 10 Radiant orders: key stat + one-line mechanical theme (our words).
-- `surges.json` — the 10 Surges: governing trait + one-line mechanical theme.
+- `surges.json` — the 10 Surges. Per surge: `attr` (governing attribute, a fact), `gist` (one-line theme), `basic` (terse paraphrase of the base surge ability), and `talents` (the surge talent tree as `{ name, gist }`, mechanics only). In a `gist`, `[ranks]` = ranks in that surge and `scales` = the die grows per the Surge Scaling table.
 - `abilities.json` — the working dataset the app consumes: general combat actions/reactions + path/order/surge **talents**, each a terse record (below).
 - `index.json` — manifest the app loads: lists the data files + dataset version.
 

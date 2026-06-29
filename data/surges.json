@@ -1,15 +1,184 @@
 {
-  "note": "Surge names + which orders wield them are facts (verified against the order talent trees). 'gist' is our own one-line paraphrase of the mechanic, not the book's wording.",
+  "note": "Surge names, governing attribute, and which orders wield them are facts (verified against the order talent trees). 'gist', 'basic', and each talent 'gist' are our own terse paraphrases of the mechanic, never the book's wording. 'attr' uses the system.json attribute keys. Talents list the surge talent trees (mechanics only); '[ranks]' = your ranks in that surge; 'scales' = die size grows with ranks per the Surge Scaling table.",
   "surges": [
-    { "key": "abrasion",       "name": "Abrasion",       "orders": ["Dustbringer", "Edgedancer"],   "gist": "control friction; slick or grip surfaces" },
-    { "key": "adhesion",       "name": "Adhesion",       "orders": ["Windrunner", "Bondsmith"],     "gist": "bind objects/surfaces together (Lashings)" },
-    { "key": "cohesion",       "name": "Cohesion",       "orders": ["Stoneward", "Willshaper"],     "gist": "sculpt and soften stone/solids" },
-    { "key": "division",       "name": "Division",       "orders": ["Dustbringer", "Skybreaker"],   "gist": "degrade, burn, or break down matter" },
-    { "key": "gravitation",    "name": "Gravitation",    "orders": ["Skybreaker", "Windrunner"],    "gist": "redirect gravity; lashings and flight" },
-    { "key": "illumination",   "name": "Illumination",   "orders": ["Lightweaver", "Truthwatcher"], "gist": "light and sound illusions" },
-    { "key": "progression",    "name": "Progression",    "orders": ["Edgedancer", "Truthwatcher"],  "gist": "accelerate growth and healing" },
-    { "key": "tension",        "name": "Tension",        "orders": ["Stoneward", "Bondsmith"],      "gist": "stiffen or animate flexible materials" },
-    { "key": "transformation", "name": "Transformation", "orders": ["Elsecaller", "Lightweaver"],   "gist": "convert one material into another (Soulcasting)" },
-    { "key": "transportation", "name": "Transportation", "orders": ["Elsecaller", "Willshaper"],    "gist": "open passages and travel via Shadesmar" }
+    {
+      "key": "abrasion",
+      "name": "Abrasion",
+      "attr": "SPD",
+      "orders": ["Dustbringer", "Edgedancer"],
+      "gist": "control friction; slick or grip surfaces",
+      "basic": "infuse object/surface (1I/round) -> nearly frictionless; or infuse self to Skate (2F: straight-line Move) and Slide (count 1 size smaller; adv to escape friction/pressure bonds). Foe on a slick surface: Agility vs your Abrasion or fall Prone / drop. Unwilling target: Abrasion vs phys.",
+      "talents": [
+        { "name": "Frictionless Motion", "gist": "infused: +10ft move; ignore Slowed from terrain/climb/crawl/swim" },
+        { "name": "Graceful Skating", "gist": "Skate no longer limited to a straight line" },
+        { "name": "Reverse Abrasion", "gist": "add friction instead: cancels surface Slowed; adv on Agility/Athletics to grip/traverse it" },
+        { "name": "Slippery Target", "gist": "infused: attacks can't graze you; Reactive Strikes vs you get disadvantage" },
+        { "name": "Slick Combatant", "gist": "infused: interrupt a Move to act then finish moving; +1d4 (scales) on a mid-move melee hit" },
+        { "name": "Smooth Operator", "gist": "while you hold any Investiture, stay infused free; Skate costs 1 fewer focus" },
+        { "name": "Distant Surgebinding", "gist": "use surges/talents as if reach 20ft, no touch needed" },
+        { "name": "Stormlight Reclamation", "gist": "after infusions tick, end any within reach to reclaim their remaining Investiture" }
+      ]
+    },
+    {
+      "key": "adhesion",
+      "name": "Adhesion",
+      "attr": "PRE",
+      "orders": ["Windrunner", "Bondsmith"],
+      "gist": "bind objects/surfaces together (Lashings)",
+      "basic": "Full Lashing: spend 1I+ to stick two unsecured objects in reach (within 5ft), or an object to a surface, together (1I/round). Unwilling: Adhesion vs phys. Break it: Athletics vs your Adhesion.",
+      "talents": [
+        { "name": "Binding Strike", "gist": "after a melee hit, spend focus to Lash an object the target holds/wears (auto-succeeds)" },
+        { "name": "Binding Shot", "gist": "use Binding Strike on ranged hits at any range" },
+        { "name": "Adhesive Trap", "gist": "infuse a surface; anyone who touches it is auto-Lashed to it" },
+        { "name": "Living Adhesion", "gist": "Lash characters directly; Lashed to something larger -> Restrained, disadv on physical tests, attacks vs them adv" },
+        { "name": "Extended Adhesion", "gist": "Lashings spend 1I per [ranks] rounds" },
+        { "name": "Superior Bond", "gist": "auto-win the break contest vs foes whose STR <= your [ranks]" },
+        { "name": "Stormlight Reclamation", "gist": "end infusions within reach to reclaim remaining Investiture" },
+        { "name": "Distant Surgebinding", "gist": "reach 20ft, no touch (paired objects still within 5ft)" }
+      ]
+    },
+    {
+      "key": "cohesion",
+      "name": "Cohesion",
+      "attr": "WIL",
+      "orders": ["Stoneward", "Willshaper"],
+      "gist": "sculpt and soften stone/solids",
+      "basic": "infuse stone (1I/round) -> soft like clay to reshape; resolidifies when it ends. Unwilling target/surface: Cohesion vs phys. Caught in resolidified stone -> Immobilized (Athletics vs your Cohesion to escape).",
+      "talents": [
+        { "name": "Stone Spear", "gist": "1I: ranged Cohesion atk vs phys (60ft), 2d4 impact (scales); spend to knock Prone" },
+        { "name": "Sinkhole", "gist": "1I: Cohesion vs cog of foes on stone ground; hit -> sink + Immobilized" },
+        { "name": "Memories of Stone", "gist": "1I: commune 1 round with stone you touch (Cohesion test to interpret)" },
+        { "name": "Tunneling", "gist": "1I: infuse self to move through stone as difficult terrain, leaving a 5ft tunnel" },
+        { "name": "True Stoneshaping", "gist": "shape stone into complex forms instantly, no extra action/time (Cohesion 2+)" },
+        { "name": "Flowing Earth", "gist": "after using Cohesion, ground pushes you up to 5ft x [ranks] any direction (no Reactive Strike)" },
+        { "name": "Unbound Cohesion", "gist": "use Cohesion on any non-living, non-Invested solid, not just stone (Cohesion 4+)" },
+        { "name": "Through the Stone", "gist": "reach 20ft through a stone surface you touch" }
+      ]
+    },
+    {
+      "key": "division",
+      "name": "Division",
+      "attr": "INT",
+      "orders": ["Dustbringer", "Skybreaker"],
+      "gist": "degrade, burn, or break down matter",
+      "basic": "decay what you touch. Character: 1I, melee Division atk vs spir, 3d4 spirit (scales); 0 health -> crumbles to dust, dies. Object/area: spend I by size; under pressure first test Division vs material DC (air 0 / smoke 5 / liquid 10 / flesh 15 / solid 20).",
+      "talents": [
+        { "name": "Bodily Decay", "gist": "spend on a Division hit -> inflict an injury on a struck foe" },
+        { "name": "Eroding Escape", "gist": "1I+ to end that many Immobilized/Restrained/physical-disadv effects on self or ally in reach" },
+        { "name": "Igniting Division", "gist": "1I+ to set the target ablaze (Afflicted) that many rounds; nearby fire = dangerous terrain dealing your Division mod" },
+        { "name": "Gout of Flame", "gist": "3I: Division atk vs phys on each target in an enlarged area, 3d4 energy (scales)" },
+        { "name": "Devastating Division", "gist": "roll one extra damage die on Division" },
+        { "name": "Spark Sending", "gist": "reach 20ft along a solid surface to the target" },
+        { "name": "Inescapable Spark", "gist": "Division reach = spren bond range along a surface; no line of effect needed; foes can't Brace vs it" },
+        { "name": "Unleashed Entropy", "gist": "Division costs 1 fewer; Under-Pressure DCs -5" }
+      ]
+    },
+    {
+      "key": "gravitation",
+      "name": "Gravitation",
+      "attr": "AWA",
+      "orders": ["Skybreaker", "Windrunner"],
+      "gist": "redirect gravity; lashings and flight",
+      "basic": "Basic Lashing: 1I+ to redirect a target's gravity (1I/round) at your gravitation rate (starts 25ft). Willing char/self: gain a matching flying rate. Object: move it up to the rate each turn. Unwilling: Gravitation vs phys, target Restrained while moved.",
+      "talents": [
+        { "name": "Flying Ace", "gist": "rate -> 40ft; mid-flight spend 1 focus for a melee attack, then keep flying" },
+        { "name": "Stable Flight", "gist": "self-Lashed: ranged attacks ignore flying/unstable-footing disadvantage" },
+        { "name": "Gravitational Slam", "gist": "Lash a target into a surface: 1d4 impact/10ft moved (scales); Avoid Danger halves" },
+        { "name": "Lashing Shot", "gist": "hurl an object: spend I = distance/rate; ranged Gravitation atk vs phys, 2d4 impact (scales)" },
+        { "name": "Multiple Lashings", "gist": "after moving an unwilling foe, infuse up to [ranks] Investiture to prolong it" },
+        { "name": "Group Flight", "gist": "out of combat, Lash up to [ranks] extra willing chars free" },
+        { "name": "Aerial Squadron", "gist": "use Group Flight in combat (Gravitation 3+)" },
+        { "name": "Master of the Skies", "gist": "while you hold any Investiture, stay infused with Gravitation free" }
+      ]
+    },
+    {
+      "key": "illumination",
+      "name": "Illumination",
+      "attr": "PRE",
+      "orders": ["Lightweaver", "Truthwatcher"],
+      "gist": "light and sound illusions",
+      "basic": "Lightweave: 1I+ to project a light/sound illusion within spren bond range (simple object: 1I/10min; character/complex: 1I/round). Disguise self free while Invested. Convincing a complex illusion: Illumination vs cog; scrutiny: Illumination vs Perception.",
+      "talents": [
+        { "name": "Distracting Illusion", "gist": "1I: illusory double on self/ally; attacks vs them get disadvantage and can't graze until one misses" },
+        { "name": "Disorienting Flash", "gist": "1I: burst in an area, Illumination vs cog -> Disoriented EONT" },
+        { "name": "Lingering Lightweavings", "gist": "anchor an illusion to a sphere; it moves with the sphere, 1I per [ranks] rounds" },
+        { "name": "Spiritual Illumination", "gist": "2I: make an ally Determined and Focused" },
+        { "name": "Multiplicative Lightweaving", "gist": "maintain up to [ranks] extra illusions free" },
+        { "name": "Painful Truth", "gist": "2I: Illumination vs spir -> Slowed; foe must Move away or spend focus to stay" },
+        { "name": "Stormlight Reclamation", "gist": "end illusions within range to reclaim remaining Investiture" }
+      ]
+    },
+    {
+      "key": "progression",
+      "name": "Progression",
+      "attr": "AWA",
+      "orders": ["Edgedancer", "Truthwatcher"],
+      "gist": "accelerate growth and healing",
+      "basic": "Growth: 1I to rapidly grow a plant/seed up to surge size. Regrowth: infuse a character (1I/round); each of their turns they recover 1d4 + your Progression mod (scales).",
+      "talents": [
+        { "name": "Injury Regrowth", "gist": "2I to cure a temporary injury, 3I for a permanent one" },
+        { "name": "Explosive Growth", "gist": "1I: Progression atk vs phys in an area, 2d4 impact/keen (scales); spend to Immobilize hits" },
+        { "name": "Swift Regeneration", "gist": "Regenerate for 1d6 + mod (scales); allies you heal add your mod to injury rolls (Progression 2+)" },
+        { "name": "Overgrowth", "gist": "grow a plant past its limits (DC 15); +2d4 to its health (scales)" },
+        { "name": "Extended Regrowth", "gist": "Regrowth spends 1I per [ranks] rounds" },
+        { "name": "Reliable Progression", "gist": "Progression dice can't roll below your [ranks] (Progression 2+)" },
+        { "name": "From the Brink", "gist": "3I to revive a willing character dead < 1 min (returns Unconscious at 0 health) (Progression 3+)" },
+        { "name": "Font of Life", "gist": "Progression and its talents cost 1 fewer" }
+      ]
+    },
+    {
+      "key": "tension",
+      "name": "Tension",
+      "attr": "STR",
+      "orders": ["Stoneward", "Bondsmith"],
+      "gist": "stiffen or animate flexible materials",
+      "basic": "1I+ to infuse a soft object (1I/round) -> fully rigid; can shape it first. Hardened Defense: infuse worn/wrapped cloth for +2 phys defense (one at a time). Unwilling target: Tension vs phys -> Slowed + disadv on physical tests.",
+      "talents": [
+        { "name": "Tension Parry", "gist": "reaction before a phys-defense hit: infuse clothing for +2 defense, can turn a hit into a miss" },
+        { "name": "Rigged Weaponry", "gist": "1I: +10ft melee reach; on a melee hit spend focus to Tension an object the target holds" },
+        { "name": "Cloth Mastery", "gist": "shape Tension objects into complex forms instantly (Tension 2+)" },
+        { "name": "Clothsmith", "gist": "Hardened Defense gives +4; Tension-made weapons get an extra d4 (scales)" },
+        { "name": "Surface Tension", "gist": "stiffen a liquid's surface to walk on it like ground" },
+        { "name": "Fine Control", "gist": "infuse an object you control: move it 25ft, act, attack 2d4 (scales) using your Tension" },
+        { "name": "Extended Tension", "gist": "infusions spend 1I per [ranks] rounds; held objects maintained free" },
+        { "name": "Stormlight Reclamation", "gist": "end infusions within reach to reclaim remaining Investiture" }
+      ]
+    },
+    {
+      "key": "transformation",
+      "name": "Transformation",
+      "attr": "WIL",
+      "orders": ["Elsecaller", "Lightweaver"],
+      "gist": "convert one material into another (Soulcasting)",
+      "basic": "Soulcast: touch a non-living object, test Transformation (DC by Essence-category shift: same/adjacent 10, +5 per extra category) and spend I by size to change it to another material. Fail -> can't retry that object this scene.",
+      "talents": [
+        { "name": "Living Soulcasting", "gist": "1I: melee Transformation atk vs spir of a living target, 3d4 spirit (scales); 0 health -> dies" },
+        { "name": "Soulcast Defense", "gist": "reaction vs a projectile: Transformation (DC = the attack); success misses + transmutes the projectile" },
+        { "name": "Soulcast Parry", "gist": "use Soulcast Defense vs melee attacks too" },
+        { "name": "Flamecasting", "gist": "add a Flame category; Soulcasting to flame attacks each char within 5ft, 2d4 energy (scales)" },
+        { "name": "Bloodcasting", "gist": "1I (DC 15): cleanse a target's poison and cut one injury's recovery by 5 days" },
+        { "name": "Persistent Transformation", "gist": "non-living Soulcast DC capped at 15; may retry failed objects (extra I per prior fail) (Transformation 2+)" },
+        { "name": "Expansive Transmuter", "gist": "non-living Soulcast costs 2 fewer Investiture" },
+        { "name": "Distant Surgebinding", "gist": "reach 20ft, no touch needed" }
+      ]
+    },
+    {
+      "key": "transportation",
+      "name": "Transportation",
+      "attr": "INT",
+      "orders": ["Elsecaller", "Willshaper"],
+      "gist": "open passages and travel via Shadesmar",
+      "basic": "1I+ to peer into Shadesmar within spren bond range; each Investiture buys one effect: read emotions/motives, locate people by their flame, or sense Investiture (Radiants, Fused, Shardblades, fabrials).",
+      "talents": [
+        { "name": "Cognitive Farsight", "gist": "spot in Shadesmar out to 3x spren bond range; while Invested, always know north + nearest settlement" },
+        { "name": "Cognitive Vision", "gist": "also read an enemy's intent (Transportation vs cog -> they get disadvantage) and locate nearby objects" },
+        { "name": "Realmic Evasion", "gist": "reaction before a hit: Transportation (DC = the attack); success misses (2nd Ideal)" },
+        { "name": "Realmic Step", "gist": "DC 15 + 2I: blink through Shadesmar to an open spot in spren-bond range (no Reactive Strike)" },
+        { "name": "Elsecalling", "gist": "1I Physical->Cognitive; DC 20 + 2I to return (3rd Ideal)" },
+        { "name": "Elsegate", "gist": "after a long rest, transport self + up to 10 to a known Oathgate/perpendicularity (4th Ideal)" },
+        { "name": "Shared Transportation", "gist": "when you transport, spend 1I+ to bring that many extra characters (Transportation 4+)" },
+        { "name": "Realmwalker", "gist": "auto-succeed Transportation tests made for talents" }
+      ]
+    }
   ]
 }

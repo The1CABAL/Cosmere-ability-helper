@@ -592,7 +592,16 @@ function buildRulesRecordsFromData(data) {
   if (Array.isArray(surges)) {
     for (const s of surges) {
       const orders = Array.isArray(s.orders) ? `orders: ${s.orders.join(", ")}` : "";
-      push(s.name, "surge", [s.gist, orders].filter(Boolean).join(" · "));
+      const body = [
+        s.attr ? `attr: ${s.attr}` : "",
+        s.gist || "",
+        orders,
+        s.basic ? `basic: ${s.basic}` : "",
+      ].filter(Boolean).join(" · ");
+      push(s.name, "surge", body);
+      if (Array.isArray(s.talents)) {
+        for (const t of s.talents) push(t.name, `${s.name} surge talent`, t.gist || "");
+      }
     }
   }
 
@@ -615,7 +624,16 @@ function buildRulesRecordsFromData(data) {
       }
     }
     if (Array.isArray(sys.skills)) {
-      for (const sk of sys.skills) push(sk.name, "skill", [`attr: ${sk.attr}`, sk.note || ""].filter(Boolean).join(" · "));
+      for (const sk of sys.skills) {
+        const body = [
+          `attr: ${sk.attr}`,
+          sk.note || "",
+          sk.use ? `use: ${sk.use}` : "",
+          sk.combat ? `combat: ${sk.combat}` : "",
+          Array.isArray(sk.examples) && sk.examples.length ? `e.g. ${sk.examples.join("; ")}` : "",
+        ].filter(Boolean).join(" · ");
+        push(sk.name, "skill", body);
+      }
     }
   }
 
