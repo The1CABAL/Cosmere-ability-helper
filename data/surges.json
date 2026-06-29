@@ -1,0 +1,15 @@
+{
+  "note": "Surge names + which orders wield them are facts (verified against the order talent trees). 'gist' is our own one-line paraphrase of the mechanic, not the book's wording.",
+  "surges": [
+    { "key": "abrasion",       "name": "Abrasion",       "orders": ["Dustbringer", "Edgedancer"],   "gist": "control friction; slick or grip surfaces" },
+    { "key": "adhesion",       "name": "Adhesion",       "orders": ["Windrunner", "Bondsmith"],     "gist": "bind objects/surfaces together (Lashings)" },
+    { "key": "cohesion",       "name": "Cohesion",       "orders": ["Stoneward", "Willshaper"],     "gist": "sculpt and soften stone/solids" },
+    { "key": "division",       "name": "Division",       "orders": ["Dustbringer", "Skybreaker"],   "gist": "degrade, burn, or break down matter" },
+    { "key": "gravitation",    "name": "Gravitation",    "orders": ["Skybreaker", "Windrunner"],    "gist": "redirect gravity; lashings and flight" },
+    { "key": "illumination",   "name": "Illumination",   "orders": ["Lightweaver", "Truthwatcher"], "gist": "light and sound illusions" },
+    { "key": "progression",    "name": "Progression",    "orders": ["Edgedancer", "Truthwatcher"],  "gist": "accelerate growth and healing" },
+    { "key": "tension",        "name": "Tension",        "orders": ["Stoneward", "Bondsmith"],      "gist": "stiffen or animate flexible materials" },
+    { "key": "transformation", "name": "Transformation", "orders": ["Elsecaller", "Lightweaver"],   "gist": "convert one material into another (Soulcasting)" },
+    { "key": "transportation", "name": "Transportation", "orders": ["Elsecaller", "Willshaper"],    "gist": "open passages and travel via Shadesmar" }
+  ]
+}

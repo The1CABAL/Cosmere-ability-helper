@@ -1,31 +1,72 @@
-# Draw Steel — Combat Reminders
+# Cosmere RPG — Combat Reminders
 
-A browser-based helper for [Draw Steel](https://www.mcdmproductions.com/) heroes: track resources, list the abilities you care about in combat, jot session notes, and search community rules text.
+A browser-based helper for **Cosmere RPG** (*Stormlight Handbook*) characters:
+track your resources, list the talents and actions you actually use in combat,
+jot session notes, and browse a mechanics-only reference.
 
-Rules data in this project comes from the independent [Steel Compendium](https://steelcompendium.io) Markdown repo (not affiliated with MCDM). Source Markdown for rules and bestiary:
-
-**[github.com/SteelCompendium/data-md](https://github.com/SteelCompendium/data-md)**
+> Unofficial fan tool. Not affiliated with or endorsed by Brandon Sanderson,
+> Dragonsteel, or Brotwise Games. No rulebook text, art, or PDF is included in
+> this project — see **[Rules data & copyright](#rules-data--copyright)** below.
 
 ## How to run
 
-There is no build step. Open `index.html` in a modern desktop browser (Chrome, Edge, Firefox, etc.), or serve the folder with any static file server if you prefer (`npx serve`, VS Code Live Server, etc.).
+No build step. Open `index.html` in a modern desktop browser, or serve the
+folder with any static file server (`npx serve`, VS Code Live Server, etc.).
+Serving (rather than `file://`) is recommended so the reference tab can load the
+local `data/*.json` files.
 
 ## Sheet
 
-- **Edit mode** — Fill in heroic resource name and current value, Stamina / Recoveries / Surges / Fate / Victories, victory and passive reminder notes, and a list of abilities (name, activity type, cost, range, trigger, notes). Use **+ Add ability** to create rows. **Load Conduit preset** fills a sample Piety-based Conduit from the compendium-style class text (confirm if you already have data).
-- **Play mode** — Compact cards for abilities; tap **Mark used** on non-free triggered abilities that share the once-per-round triggered budget. **New round** clears those flags.
-- **Footer** — Your data saves automatically in the browser (`localStorage`). You can **Download JSON**, **Import JSON**, and optionally **Choose file for auto-backup** (Chromium browsers: mirrors saves to a file on disk).
+- **Edit mode** — Fill in your character: the three resource pools
+  (**Health**, **Focus**, **Investiture**) with current/max, your **recovery
+  die**, plus reminder notes and a list of abilities (name, action type, cost,
+  range, trigger, notes).
+- **Play mode** — Compact cards for abilities and quick +/- trackers for your
+  resources. **New round** clears per-round "used" flags.
+- **Footer** — Data autosaves in the browser (`localStorage`). You can
+  **Download JSON**, **Import JSON**, and optionally **Choose file for
+  auto-backup** (Chromium browsers mirror saves to a file on disk).
 
 ## Notes
 
-Switch to the **Notes** tab for a scratch pad: **Type** for text, **Ink** for drawing (stylus pressure supported). Create or rename pages; content is saved with the rest of the app state.
+The **Notes** tab is a scratch pad: **Type** for text, **Ink** for drawing
+(stylus pressure supported). Create or rename pages; content saves with the rest
+of the app state.
 
-## Rules
+## Reference
 
-The **Rules** tab searches Markdown from the [data-md](https://github.com/SteelCompendium/data-md) repository: it loads a file list from GitHub (cached for a day), optionally uses GitHub code search for text matches, and loads full files from `raw.githubusercontent.com`. Uncheck **Include bestiary content** to hide `Bestiary/` paths.
+The **Reference** tab loads this repo's `data/*.json` — a **mechanics-only**
+index of player options (attributes, defenses, resource formulas, skills,
+paths, orders, surges, general actions, and talents). Search by name or effect.
 
-For fewer API limits and offline-friendly full-text search, use **Local data-md folder** (Chromium) and select a local clone of the repo. That folder is not part of this git repository; clone [SteelCompendium/data-md](https://github.com/SteelCompendium/data-md) yourself if you want a copy on disk.
+## Rules data & copyright
+
+This project deliberately contains **no rulebook prose, flavor text, art, or
+PDF**. The committed `data/` files are a paraphrased, mechanics-only index:
+game systems and numbers (which are facts, not copyrightable expression),
+written in our own terse shorthand — never the book's wording.
+
+The pipeline that produces it keeps the source local:
+
+| Path | Purpose | Committed? |
+|------|---------|-----------|
+| `Cosmere_RPG_*.pdf` | your purchased source | **No** — gitignored |
+| `raw/` | local `pdftotext` output (verbatim + watermark) | **No** — gitignored |
+| `data/` | paraphrased mechanics-only JSON | Yes |
+| `tools/` | extraction + verbatim guard | Yes |
+
+- `tools/extract.sh` — runs `pdftotext` on your local PDF into `raw/`, stripping
+  the personalized purchase watermark. Re-runnable; output never leaves disk.
+- `tools/check-verbatim.sh` — **the guard**: blocks any commit where 6+
+  consecutive words of `data/` also appear in the source. This makes
+  "no verbatim text" an enforced invariant, not a promise. Install it as a
+  pre-commit hook with `git config core.hooksPath tools`.
+
+See **[data/SCHEMA.md](data/SCHEMA.md)** for the data format and the workflow to
+extend coverage. Bring your own legally-obtained PDF; none is distributed here.
 
 ## License
 
-This helper app is separate from MCDM and from the Steel Compendium data. Refer to the [data-md LICENSE](https://github.com/SteelCompendium/data-md/blob/main/LICENSE) for the rules Markdown content.
+The app code is yours to use. The `data/` index describes game mechanics
+(uncopyrightable facts) in original wording. Trademarks and the *Stormlight
+Archive* / *Cosmere* settings belong to their respective owners.

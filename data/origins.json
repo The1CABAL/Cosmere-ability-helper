@@ -1,0 +1,15 @@
+{
+  "note": "Ancestry mechanics only; descriptions are our own paraphrase.",
+  "ancestries": [
+    {
+      "key": "human",
+      "name": "Human",
+      "mech": "Gain an extra heroic-path talent at creation (another talent in your path, or the first talent of a second path)."
+    },
+    {
+      "key": "singer",
+      "name": "Singer",
+      "mech": "Gain the Change Form key talent plus one talent granting starting forms. Forms (e.g. warform, workform, nimbleform, mateform, dullform) swap attribute/feature packages."
+    }
+  ]
+}

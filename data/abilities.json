@@ -1,0 +1,31 @@
+{
+  "note": "Working dataset for the app. General actions/reactions available to all characters, plus worked-example heroic key talents. 'eff' is terse shorthand in our own words. Costs marked '?' were rendered as glyphs in extraction and use the standard 1-action default; verify against your book.",
+  "version": "0.1.0",
+  "abilities": [
+    { "id": "gen-strike",        "name": "Strike",        "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "reach", "vs": "phys", "eff": "unarmed/weapon atk vs Physical. Repeatable, but each uses a different hand; offhand costs 2F." },
+    { "id": "gen-move",          "name": "Move",          "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "self",  "vs": "",     "eff": "move up to movement rate; Slowed conditions reduce it. Repeatable." },
+    { "id": "gen-interact",      "name": "Interact",      "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "reach", "vs": "",     "eff": "manipulate a nearby object (draw weapon, open door, grab item); no test. Repeatable." },
+    { "id": "gen-use-skill",     "name": "Use a Skill",   "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "self",  "vs": "",     "eff": "roll a skill to handle a battlefield task (hide, search, treat)." },
+    { "id": "gen-gain-advantage","name": "Gain Advantage","src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "self",  "vs": "varies","eff": "skill test vs foe defense; success -> advantage on next test vs that foe with a different skill." },
+    { "id": "gen-brace",         "name": "Brace",         "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "self",  "vs": "",     "eff": "take cover within 5ft; attacks vs you get disadvantage until you move/attack." },
+    { "id": "gen-disengage",     "name": "Disengage",     "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "self",  "vs": "",     "eff": "move 5ft without triggering Reactive Strikes." },
+    { "id": "gen-grapple",       "name": "Grapple",       "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "reach", "vs": "phys", "eff": "Athletics vs Physical; success -> target Restrained while in reach." },
+    { "id": "gen-shove",         "name": "Shove",         "src": "general", "kind": "action",   "tier": 0, "act": "1a",  "cost": "",   "rng": "reach", "vs": "phys", "eff": "Athletics vs Physical; success -> push/pull 5ft; ends a Grapple on you." },
+    { "id": "gen-recover",       "name": "Recover",       "src": "general", "kind": "action",   "tier": 0, "act": "1a+", "cost": "",   "rng": "self",  "vs": "",     "eff": "roll recovery die to regain health/focus (as a short rest). Once per scene; can spend extra actions." },
+    { "id": "gen-ready",         "name": "Ready",         "src": "general", "kind": "action",   "tier": 0, "act": "var", "cost": "",   "rng": "self",  "vs": "",     "eff": "pick a trigger + an action; use that action when the trigger fires before your next turn. Costs the action's cost +1a." },
+    { "id": "gen-banter",        "name": "Banter",        "src": "general", "kind": "action",   "tier": 0, "act": "free","cost": "",   "rng": "self",  "vs": "",     "eff": "speak briefly; nuanced/persuasive speech needs Use a Skill instead." },
+    { "id": "gen-drop",          "name": "Drop",          "src": "general", "kind": "action",   "tier": 0, "act": "free","cost": "",   "rng": "self",  "vs": "",     "eff": "drop held objects." },
+
+    { "id": "gen-aid",            "name": "Aid",           "src": "general", "kind": "reaction", "tier": 0, "act": "rea", "cost": "1F", "rng": "varies", "vs": "",     "eff": "trigger: ally about to test -> grant them an advantage." },
+    { "id": "gen-dodge",          "name": "Dodge",         "src": "general", "kind": "reaction", "tier": 0, "act": "rea", "cost": "1F", "rng": "self",   "vs": "",     "eff": "trigger: an attack is aimed at you -> impose disadvantage on it. Not vs area/multi-target." },
+    { "id": "gen-avoid-danger",   "name": "Avoid Danger",  "src": "general", "kind": "reaction", "tier": 0, "act": "rea", "cost": "",   "rng": "self",   "vs": "",     "eff": "trigger: imperiled by surroundings -> Agility test (DC = triggering result, else 15) to escape/mitigate." },
+    { "id": "gen-reactive-strike","name": "Reactive Strike","src": "general","kind": "reaction", "tier": 0, "act": "rea", "cost": "1F", "rng": "reach",  "vs": "phys", "eff": "trigger: foe willingly steps out of your reach -> melee/unarmed atk vs Physical. Not vs instantaneous movement." },
+
+    { "id": "agent-opportunist",       "name": "Opportunist",      "src": "agent",   "kind": "talent", "key": true, "tier": 1, "pre": "", "act": "free", "cost": "", "rng": "self", "vs": "", "eff": "1x each round: re-roll one plot-die result." },
+    { "id": "envoy-rousing-presence",  "name": "Rousing Presence", "src": "envoy",   "kind": "talent", "key": true, "tier": 1, "pre": "", "act": "1a?", "cost": "", "rng": "varies", "vs": "", "eff": "make an ally Determined." },
+    { "id": "hunter-seek-quarry",      "name": "Seek Quarry",      "src": "hunter",  "kind": "talent", "key": true, "tier": 1, "pre": "", "act": "1a?", "cost": "", "rng": "varies", "vs": "", "eff": "mark a target to pursue; gain an advantage against it." },
+    { "id": "leader-decisive-command", "name": "Decisive Command", "src": "leader",  "kind": "talent", "key": true, "tier": 1, "pre": "", "act": "1a?", "cost": "", "rng": "varies", "vs": "", "eff": "give an ally a bonus d4 ('command die') applied to one roll." },
+    { "id": "scholar-erudition",       "name": "Erudition",        "src": "scholar", "kind": "talent", "key": true, "tier": 1, "pre": "", "act": "none", "cost": "", "rng": "self", "vs": "", "eff": "gain bonus skill ranks you can reallocate." },
+    { "id": "warrior-vigilant-stance", "name": "Vigilant Stance",  "src": "warrior", "kind": "talent", "key": true, "tier": 1, "pre": "", "act": "1a?", "cost": "", "rng": "self", "vs": "", "eff": "adopt a defensive stance granting added responsiveness and flexibility." }
+  ]
+}

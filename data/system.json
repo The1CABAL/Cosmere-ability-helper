@@ -1,0 +1,50 @@
+{
+  "system": "Cosmere RPG (Stormlight Handbook)",
+  "note": "Mechanics/facts only. Formulas and mappings are game system facts, not protected expression.",
+  "attributes": [
+    { "key": "STR", "name": "Strength", "category": "Physical" },
+    { "key": "SPD", "name": "Speed", "category": "Physical" },
+    { "key": "INT", "name": "Intellect", "category": "Cognitive" },
+    { "key": "WIL", "name": "Willpower", "category": "Cognitive" },
+    { "key": "AWA", "name": "Awareness", "category": "Spiritual" },
+    { "key": "PRE", "name": "Presence", "category": "Spiritual" }
+  ],
+  "attributeRange": { "min": 0, "max": 5, "note": "starting humans/singers; raises on level up" },
+  "defenses": [
+    { "key": "phys", "name": "Physical", "formula": "10 + STR + SPD" },
+    { "key": "cog", "name": "Cognitive", "formula": "10 + INT + WIL" },
+    { "key": "spir", "name": "Spiritual", "formula": "10 + AWA + PRE" }
+  ],
+  "resources": [
+    { "key": "health", "name": "Health", "category": "Physical", "maxFormula": "10 + STR", "note": "increases with level" },
+    { "key": "focus", "name": "Focus", "category": "Cognitive", "maxFormula": "2 + WIL" },
+    { "key": "investiture", "name": "Investiture", "category": "Spiritual", "maxFormula": "gained via Radiant path; scales with AWA or PRE" }
+  ],
+  "actionEconomy": {
+    "actionsPerTurn": "2 or 3",
+    "reactionsPerTurn": 1,
+    "freeActions": "limited by GM/fiction",
+    "actionCosts": ["1a", "2a", "3a"],
+    "note": "Abilities labeled by how many actions they cost; reactions need a trigger; free actions cost none."
+  },
+  "skills": [
+    { "name": "Agility", "attr": "SPD" },
+    { "name": "Athletics", "attr": "STR" },
+    { "name": "Crafting", "attr": "INT" },
+    { "name": "Deception", "attr": "PRE" },
+    { "name": "Deduction", "attr": "INT" },
+    { "name": "Discipline", "attr": "WIL" },
+    { "name": "Insight", "attr": "AWA" },
+    { "name": "Intimidation", "attr": "WIL" },
+    { "name": "Leadership", "attr": "PRE" },
+    { "name": "Lore", "attr": "INT" },
+    { "name": "Medicine", "attr": "INT" },
+    { "name": "Perception", "attr": "AWA" },
+    { "name": "Persuasion", "attr": "PRE" },
+    { "name": "Stealth", "attr": "SPD" },
+    { "name": "Survival", "attr": "AWA" },
+    { "name": "Thievery", "attr": "SPD" },
+    { "name": "Weaponry", "attr": "STR or SPD", "note": "uses Strength or Speed" }
+  ],
+  "skillRankRange": { "min": 0, "max": 5 }
+}

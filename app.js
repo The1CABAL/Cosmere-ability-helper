@@ -1,124 +1,162 @@
 /**
- * Local-only combat reminder sheet for Draw Steel characters.
+ * Local-only combat reminder sheet for Cosmere RPG characters.
  */
 
-const STORAGE_KEY = "drawSteelAbilityHelper.v1";
+const STORAGE_KEY = "cosmereAbilityHelper.v1";
 
 /**
- * One-click Conduit sheet aligned to the class quick build in `data-md-main/Rules/Classes/Conduit.md`
- * and 1st-level ability files under `data-md-main/Rules/Abilities/Conduit/…` (Steel Compendium data-md).
- * In Edit mode you can swap domains, signatures, or Word of Judgment vs Word of Guidance per the Heroes book.
+ * One-click level-1 Warrior example. Fills the resource fields and a short
+ * ability list drawn from the local data/ index (general actions/reactions +
+ * the Warrior key talent). Notes are terse mechanical shorthand, not rulebook prose.
  */
-const CONDUIT_PRESET = {
-  heroicName: "Piety",
-  heroicCurrent: "",
-  victoryNotes:
-    "Piety (combat): At the start of an encounter, gain piety equal to your Victories. At the start of each of your turns, gain 1d3 piety. Before that roll you may pray (no action) for extra piety or a domain prayer effect on a 3 — on a 1 you also take 1d6 + level psychic damage that can't be reduced. You lose remaining piety when the encounter ends.\n\nOutside combat: abilities that cost piety can be used without spending it; each can't be used again out of combat until you earn Victories or finish a respite. Unlimited-piety effects (e.g. Healing Grace) use piety as if equal to your Victories.",
+const WARRIOR_PRESET = {
+  characterName: "Example Warrior",
+  level: "1",
+  playerName: "",
+  paths: "Warrior",
+  ancestry: "Human",
+  attrs: { STR: "2", SPD: "1", INT: "0", WIL: "2", AWA: "1", PRE: "0" },
+  skills: { Athletics: "2", "Heavy Weaponry": "2", "Light Weaponry": "1", Discipline: "1", Perception: "1" },
+  healthMax: "12",
+  focusMax: "4",
+  recoveryDie: "d6",
+  physDef: "13",
+  cogDef: "12",
+  spirDef: "11",
+  resourceNotes:
+    "Focus fuels reactions (Reactive Strike, Dodge, Aid cost 1F). Recover (1+ action, once/scene): roll recovery die to regain Health/Focus.",
   passiveNotes:
-    "Quick build — Adûn; Life + Protection domains; Heal skill.\n\nPrayer of Distance — +2 bonus to the distance of your ranged magic abilities.\n\nBastion Ward — +1 bonus to saving throws.\n\nRevitalizing Ritual (Life domain) — Each time you finish a respite, choose yourself or one ally also finishing a respite: that character gains a bonus to their recovery value equal to your level until you finish another respite.",
+    "Warrior path · Athletics start skill. Key talent: Vigilant Stance.\n\nOne reaction per round — spend it on Reactive Strike, Dodge, Aid, or Avoid Danger.",
   abilities: [
     {
-      name: "Blessed Light",
-      activity: "action",
-      cost: "Main action · Signature (at will)",
-      rangeTargets: "Ranged 10 · one creature or object",
-      trigger: "",
-      notes:
-        "Power roll + Intuition: ≤11: 3 + I holy damage; 12–16: 5 + I holy; 17+: 8 + I holy. Effect: one ally within distance gains a number of surges equal to the tier outcome of your power roll.",
-      nonFreeTriggered: false,
-    },
-    {
-      name: "Staggering Curse",
-      activity: "action",
-      cost: "Main action · Signature (at will)",
-      rangeTargets: "Melee 1 · one creature or object",
-      trigger: "",
-      notes:
-        "Power roll + Intuition: ≤11: 3 + I holy damage, slide 1; 12–16: 5 + I holy, slide 2; 17+: 8 + I holy, slide 3.",
-      nonFreeTriggered: false,
-    },
-    {
-      name: "Healing Grace",
-      activity: "maneuver",
-      cost: "Maneuver",
-      rangeTargets: "Ranged 10 · self or one ally",
-      trigger: "",
-      notes:
-        "Effect: the target can spend a Recovery. Spend 1+ piety: for each piety, choose one — target one additional ally within distance; end one save/end-of-turn effect on a target; a prone target stands; or a target spends 1 additional Recovery.",
-      nonFreeTriggered: false,
-    },
-    {
-      name: "Ray of Wrath",
-      activity: "action",
-      cost: "Main action · ranged free strike",
-      rangeTargets: "Ranged 10 · one creature or object",
-      trigger: "",
-      notes:
-        "Power roll + Intuition: ≤11: 2 + I damage; 12–16: 4 + I; 17+: 6 + I. Effect: you can have this ability deal holy damage.",
-      nonFreeTriggered: false,
-    },
-    {
-      name: "Call the Thunder Down",
-      activity: "action",
-      cost: "Main action · 3 Piety",
-      rangeTargets: "3 cube within 10 · each enemy in the area",
-      trigger: "",
-      notes:
-        "Power roll + Intuition: ≤11: 2 sonic damage, push 1; 12–16: 3 sonic, push 2; 17+: 5 sonic, push 3. Effect: you can push each willing ally in the area the same distance, ignoring stability.",
-      nonFreeTriggered: false,
-    },
-    {
-      name: "Faith Is Our Armor",
-      activity: "maneuver",
-      cost: "Maneuver · 5 Piety",
-      rangeTargets: "Ranged 10 · four allies (you can target yourself instead of one ally)",
-      trigger: "",
-      notes:
-        "Power roll + Intuition: ≤11: target gains 5 temporary Stamina; 12–16: 10 temporary Stamina; 17+: 15 temporary Stamina.",
-      nonFreeTriggered: false,
-    },
-    {
-      name: "Word of Guidance",
-      activity: "triggered",
+      name: "Strike",
+      activity: "1a",
       cost: "",
-      rangeTargets: "Ranged 10 · one ally",
-      trigger: "The target makes an ability roll for a damage-dealing ability.",
-      notes: "Effect: the power roll gains an edge. Spend 1 piety: the power roll has a double edge instead.",
+      rangeTargets: "reach · vs Physical",
+      trigger: "",
+      notes: "Weapon/unarmed atk vs Physical. Repeatable; offhand costs 2F.",
+      nonFreeTriggered: false,
+    },
+    {
+      name: "Vigilant Stance",
+      activity: "1a",
+      cost: "",
+      rangeTargets: "self",
+      trigger: "",
+      notes: "Warrior key talent. Defensive stance: added responsiveness and flexibility.",
+      nonFreeTriggered: false,
+    },
+    {
+      name: "Reactive Strike",
+      activity: "reaction",
+      cost: "1F",
+      rangeTargets: "reach · vs Physical",
+      trigger: "A foe willingly steps out of your reach.",
+      notes: "Melee/unarmed atk vs Physical. Not vs instantaneous movement. Uses your reaction.",
       nonFreeTriggered: true,
     },
     {
-      name: "Revitalizing Ritual",
-      activity: "other",
-      cost: "",
-      rangeTargets: "",
-      trigger: "",
-      notes:
-        "Life domain 1st-level feature (exploration). Each time you finish a respite, choose yourself or one ally who is also finishing a respite: that character gains a bonus to their recovery value equal to your level until you finish another respite.",
-      nonFreeTriggered: false,
+      name: "Dodge",
+      activity: "reaction",
+      cost: "1F",
+      rangeTargets: "self",
+      trigger: "An attack is aimed at you.",
+      notes: "Impose disadvantage on the attack. Not vs area/multi-target. Uses your reaction.",
+      nonFreeTriggered: true,
     },
   ],
 };
 
+/** The six attributes, grouped by the defense/resource category they feed. */
+const ATTRIBUTES = [
+  { key: "STR", name: "Strength", cat: "Physical" },
+  { key: "SPD", name: "Speed", cat: "Physical" },
+  { key: "INT", name: "Intellect", cat: "Cognitive" },
+  { key: "WIL", name: "Willpower", cat: "Cognitive" },
+  { key: "AWA", name: "Awareness", cat: "Spiritual" },
+  { key: "PRE", name: "Presence", cat: "Spiritual" },
+];
+
+/** Skills as printed on the Stormlight sheet (Weaponry split into Heavy/Light). */
+const SKILLS = [
+  { name: "Agility", attr: "SPD" },
+  { name: "Athletics", attr: "STR" },
+  { name: "Heavy Weaponry", attr: "STR" },
+  { name: "Light Weaponry", attr: "SPD" },
+  { name: "Stealth", attr: "SPD" },
+  { name: "Thievery", attr: "SPD" },
+  { name: "Crafting", attr: "INT" },
+  { name: "Deduction", attr: "INT" },
+  { name: "Discipline", attr: "WIL" },
+  { name: "Intimidation", attr: "WIL" },
+  { name: "Lore", attr: "INT" },
+  { name: "Medicine", attr: "INT" },
+  { name: "Deception", attr: "PRE" },
+  { name: "Insight", attr: "AWA" },
+  { name: "Leadership", attr: "PRE" },
+  { name: "Perception", attr: "AWA" },
+  { name: "Persuasion", attr: "PRE" },
+  { name: "Survival", attr: "AWA" },
+];
+
+/** Defense key -> { manual state field, attributes summed for the 10+a+b formula }. */
+const DEFENSES = [
+  { key: "phys", label: "Physical", field: "physDef", parts: ["STR", "SPD"] },
+  { key: "cog", label: "Cognitive", field: "cogDef", parts: ["INT", "WIL"] },
+  { key: "spir", label: "Spiritual", field: "spirDef", parts: ["AWA", "PRE"] },
+];
+
 const ACTIVITY_TYPES = [
-  { value: "action", label: "Action" },
-  { value: "maneuver", label: "Maneuver" },
-  { value: "move", label: "Move" },
-  { value: "triggered", label: "Triggered" },
-  { value: "free-triggered", label: "Free triggered" },
+  { value: "1a", label: "1 action" },
+  { value: "2a", label: "2 actions" },
+  { value: "3a", label: "3 actions" },
+  { value: "reaction", label: "Reaction" },
+  { value: "free", label: "Free action" },
+  { value: "passive", label: "Passive" },
   { value: "other", label: "Other" },
 ];
 
 const defaultState = () => ({
-  heroicName: "",
-  heroicCurrent: "",
-  staminaCurrent: "",
-  staminaMax: "",
-  recoveriesCurrent: "",
-  recoveriesMax: "",
-  surgesCurrent: "",
-  fateCurrent: "",
-  victoriesCurrent: "",
-  victoryNotes: "",
+  characterName: "",
+  level: "",
+  playerName: "",
+  paths: "",
+  ancestry: "",
+  attrs: {},
+  skills: {},
+  healthCurrent: "",
+  healthMax: "",
+  focusCurrent: "",
+  focusMax: "",
+  investitureCurrent: "",
+  investitureMax: "",
+  recoveryDie: "",
+  physDef: "",
+  cogDef: "",
+  spirDef: "",
+  deflect: "",
+  movement: "",
+  sensesRange: "",
+  liftingCapacity: "",
+  weapons: "",
+  expertises: "",
+  conditions: "",
+  appearance: "",
+  equipment: "",
+  marks: "",
+  purpose: "",
+  obstacle: "",
+  goals: "",
+  connections: "",
+  otherAbilities: "",
+  characterNotes: "",
+  radiantOrder: "",
+  sprenName: "",
+  sprenPersonality: "",
+  sprenBondRange: "",
+  ideals: "",
+  surgesNotes: "",
+  resourceNotes: "",
   passiveNotes: "",
   abilities: [],
   scratchCanvases: [],
@@ -247,11 +285,9 @@ function scaleScratchInkStrokesForResize(page, sx, sy) {
  * Play-mode +/- bars. Rows with maxKey use current / max; rows without maxKey are current only.
  */
 const RESOURCE_PLAY_ROWS = [
-  { label: "Stamina", curKey: "staminaCurrent", maxKey: "staminaMax" },
-  { label: "Recoveries", curKey: "recoveriesCurrent", maxKey: "recoveriesMax" },
-  { label: "Surges", curKey: "surgesCurrent" },
-  { label: "Fate points", curKey: "fateCurrent" },
-  { label: "Victories", curKey: "victoriesCurrent" },
+  { label: "Health", curKey: "healthCurrent", maxKey: "healthMax" },
+  { label: "Focus", curKey: "focusCurrent", maxKey: "focusMax" },
+  { label: "Investiture", curKey: "investitureCurrent", maxKey: "investitureMax" },
 ];
 
 let state = loadState();
@@ -270,10 +306,6 @@ function loadState() {
       ...parsed,
       abilities: Array.isArray(parsed.abilities) ? parsed.abilities : [],
     };
-    delete merged.heroicMax;
-    delete merged.surgesMax;
-    delete merged.fateMax;
-    delete merged.victoriesMax;
     migrateLegacyScratchToCanvases(merged);
     if (!parsedHadInkLayout) {
       migrateScratchInkDoubleCanvasHeight(merged);
@@ -298,11 +330,10 @@ function saveState() {
 
 /* —— Optional mirror to a user-chosen file (Chrome/Edge File System Access API) —— */
 
-const IDB_NAME = "drawSteelAbilityHelper";
+const IDB_NAME = "cosmereAbilityHelper";
 const IDB_VERSION = 1;
 const IDB_STORE = "handles";
 const BACKUP_HANDLE_KEY = "backupJson";
-const RULES_DIR_HANDLE_KEY = "rulesDataMdDir";
 const AUTO_FILE_DEBOUNCE_MS = 900;
 const AUTO_FILE_INTERVAL_MS = 5 * 60 * 1000;
 
@@ -356,40 +387,6 @@ async function idbClearBackupHandle() {
   await new Promise((resolve, reject) => {
     const tx = db.transaction(IDB_STORE, "readwrite");
     tx.objectStore(IDB_STORE).delete(BACKUP_HANDLE_KEY);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-  db.close();
-}
-
-async function idbSetRulesDirHandle(handle) {
-  const db = await openIdb();
-  await new Promise((resolve, reject) => {
-    const tx = db.transaction(IDB_STORE, "readwrite");
-    tx.objectStore(IDB_STORE).put(handle, RULES_DIR_HANDLE_KEY);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-  db.close();
-}
-
-async function idbGetRulesDirHandle() {
-  const db = await openIdb();
-  const result = await new Promise((resolve, reject) => {
-    const tx = db.transaction(IDB_STORE, "readonly");
-    const r = tx.objectStore(IDB_STORE).get(RULES_DIR_HANDLE_KEY);
-    r.onsuccess = () => resolve(r.result);
-    r.onerror = () => reject(r.error);
-  });
-  db.close();
-  return result;
-}
-
-async function idbClearRulesDirHandle() {
-  const db = await openIdb();
-  await new Promise((resolve, reject) => {
-    const tx = db.transaction(IDB_STORE, "readwrite");
-    tx.objectStore(IDB_STORE).delete(RULES_DIR_HANDLE_KEY);
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });
@@ -478,7 +475,7 @@ async function chooseBackupFile() {
   }
   try {
     const handle = await window.showSaveFilePicker({
-      suggestedName: "draw-steel-character.json",
+      suggestedName: "cosmere-character.json",
       types: [{ description: "JSON", accept: { "application/json": [".json"] } }],
     });
     backupFileHandle = handle;
@@ -524,350 +521,18 @@ let scratchNotesBindingsAbort = null;
 let scratchInkCurrentStroke = null;
 let notesPageResizeObserver = null;
 
-const DATA_MD_REPO = "SteelCompendium/data-md";
-const DATA_MD_BRANCH = "main";
-const GITHUB_DATA_MD_TREE = `https://api.github.com/repos/${DATA_MD_REPO}/git/trees/${DATA_MD_BRANCH}?recursive=1`;
-const DATA_MD_RAW_BASE = `https://raw.githubusercontent.com/${DATA_MD_REPO}/${DATA_MD_BRANCH}/`;
-const RULES_TREE_STORAGE_KEY = "drawSteelRulesTree.v1";
-const RULES_TREE_TTL_MS = 1000 * 60 * 60 * 24;
-const RULES_LOCAL_BODY_SCAN_MAX_CHARS = 450000;
+/* —— Reference tab: searches the local mechanics-only data/ index (no external fetch). —— */
 
-let rulesMdPaths = null;
-let rulesIndexLoadPromise = null;
-let rulesLocalDirHandle = null;
-let rulesLocalFileMap = new Map();
-
-function supportsRulesDirectoryPicker() {
-  return typeof window.showDirectoryPicker === "function";
-}
-
-function rulesUsesLocalClone() {
-  return rulesLocalDirHandle != null;
-}
-
-async function verifyRulesLocalPermission() {
-  if (!rulesLocalDirHandle?.queryPermission) return true;
-  let q = await rulesLocalDirHandle.queryPermission({ mode: "read" });
-  if (q === "granted") return true;
-  if (typeof rulesLocalDirHandle.requestPermission === "function") {
-    q = await rulesLocalDirHandle.requestPermission({ mode: "read" });
-  }
-  return q === "granted";
-}
-
-function updateRulesSourceUi() {
-  const btnGithub = document.getElementById("btnRulesUseGithub");
-  const btnFolder = document.getElementById("btnRulesChooseFolder");
-  const btnRefresh = document.getElementById("btnRulesRefreshIndex");
-  const line = document.getElementById("rulesSourceLine");
-  const local = rulesUsesLocalClone();
-  const canPick = supportsRulesDirectoryPicker();
-  if (btnGithub) btnGithub.hidden = !local;
-  if (btnFolder) {
-    btnFolder.hidden = !canPick;
-    if (canPick) {
-      btnFolder.textContent = local ? "Change local folder…" : "Local data-md folder…";
-    }
-  }
-  if (btnRefresh) {
-    btnRefresh.title = local
-      ? "Re-scan the linked folder for new or removed Markdown files"
-      : "Clear cached file list and re-download from GitHub";
-  }
-  if (line) {
-    line.textContent = local
-      ? "Source: linked folder on this computer (full-text search runs locally; no GitHub code-search limits)."
-      : "Source: GitHub API + raw files (file list cached one day).";
-  }
-}
-
-async function collectMarkdownUnder(dirHandle, basePath = "") {
-  const out = [];
-  for await (const [name, handle] of dirHandle.entries()) {
-    const rel = basePath ? `${basePath}/${name}` : name;
-    if (handle.kind === "file" && /\.md$/i.test(name)) {
-      out.push({ path: rel.replace(/\\/g, "/"), handle });
-    } else if (handle.kind === "directory") {
-      if (name === ".git" || name === "node_modules") continue;
-      out.push(...(await collectMarkdownUnder(handle, rel)));
-    }
-  }
-  return out;
-}
-
-async function scanLocalRulesDir() {
-  if (!rulesLocalDirHandle) return;
-  setRulesSearchStatus("Scanning local folder for Markdown…");
-  const entries = await collectMarkdownUnder(rulesLocalDirHandle);
-  rulesLocalFileMap = new Map(entries.map((e) => [e.path, e.handle]));
-  rulesMdPaths = entries.map((e) => e.path).sort((a, b) => a.localeCompare(b));
-  setRulesSearchStatus(`Local: ${rulesMdPaths.length} Markdown file(s).`);
-}
-
-async function initRulesLocalDirHandle() {
-  if (!supportsRulesDirectoryPicker()) return;
-  try {
-    const h = await idbGetRulesDirHandle();
-    if (h && h.kind === "directory") rulesLocalDirHandle = h;
-  } catch {
-    rulesLocalDirHandle = null;
-  }
-}
-
-async function chooseRulesLocalFolder() {
-  if (!supportsRulesDirectoryPicker()) {
-    alert("Linking a rules folder needs Chrome, Edge, or another Chromium-based browser.");
-    return;
-  }
-  try {
-    const dir = await window.showDirectoryPicker({ mode: "read" });
-    rulesLocalDirHandle = dir;
-    const ok = await verifyRulesLocalPermission();
-    if (!ok) {
-      rulesLocalDirHandle = null;
-      setRulesSearchStatus("Folder access was not granted.", true);
-      updateRulesSourceUi();
-      return;
-    }
-    rulesMdPaths = null;
-    rulesLocalFileMap = new Map();
-    rulesIndexLoadPromise = null;
-    await scanLocalRulesDir();
-    await idbSetRulesDirHandle(dir);
-    updateRulesSourceUi();
-  } catch (e) {
-    if (e && e.name !== "AbortError") {
-      alert(`Could not use that folder: ${e.message || String(e)}`);
-      rulesLocalDirHandle = null;
-      rulesLocalFileMap = new Map();
-      rulesMdPaths = null;
-      rulesIndexLoadPromise = null;
-      updateRulesSourceUi();
-    }
-  }
-}
-
-async function useGithubForRules() {
-  rulesLocalDirHandle = null;
-  rulesLocalFileMap = new Map();
-  rulesMdPaths = null;
-  rulesIndexLoadPromise = null;
-  try {
-    await idbClearRulesDirHandle();
-  } catch {
-    /* ignore */
-  }
-  updateRulesSourceUi();
-  setRulesSearchStatus("Switched to GitHub. Loading file list…");
-  void ensureRulesIndexLoaded();
-}
-
-function readCachedRulesPaths() {
-  try {
-    const raw = localStorage.getItem(RULES_TREE_STORAGE_KEY);
-    if (!raw) return null;
-    const o = JSON.parse(raw);
-    if (!o || !Array.isArray(o.paths) || typeof o.cachedAt !== "number") return null;
-    if (Date.now() - o.cachedAt > RULES_TREE_TTL_MS) return null;
-    return o.paths;
-  } catch {
-    return null;
-  }
-}
-
-function writeCachedRulesPaths(paths) {
-  try {
-    localStorage.setItem(RULES_TREE_STORAGE_KEY, JSON.stringify({ paths, cachedAt: Date.now() }));
-  } catch {
-    /* ignore quota */
-  }
-}
+/** In-memory records: { id, title, sub, body }. */
+let rulesRecords = null;
+let rulesLoadPromise = null;
+let rulesActiveRecordId = "";
 
 function setRulesSearchStatus(message, isError = false) {
   const el = document.getElementById("rulesSearchStatus");
   if (!el) return;
   el.textContent = message || "";
   el.classList.toggle("is-error", Boolean(isError));
-}
-
-function rawUrlFromPath(relPath) {
-  return DATA_MD_RAW_BASE + relPath.split("/").map(encodeURIComponent).join("/");
-}
-
-function ensureRulesIndexLoaded() {
-  if (rulesMdPaths?.length) return Promise.resolve();
-  if (rulesIndexLoadPromise) return rulesIndexLoadPromise;
-
-  if (rulesUsesLocalClone()) {
-    rulesIndexLoadPromise = (async () => {
-      const ok = await verifyRulesLocalPermission();
-      if (!ok) {
-        throw new Error("Folder access was not granted. Use “Local data-md folder…” to pick the clone again.");
-      }
-      await scanLocalRulesDir();
-    })().catch((e) => {
-      rulesIndexLoadPromise = null;
-      if (!rulesUsesLocalClone()) rulesMdPaths = null;
-      setRulesSearchStatus(e?.message || String(e), true);
-    });
-    return rulesIndexLoadPromise;
-  }
-
-  rulesIndexLoadPromise = (async () => {
-    const cached = readCachedRulesPaths();
-    if (cached?.length) {
-      rulesMdPaths = cached;
-      setRulesSearchStatus(`Using cached file list (${cached.length} Markdown files).`);
-      return;
-    }
-    setRulesSearchStatus("Downloading file list from GitHub…");
-    const r = await fetch(GITHUB_DATA_MD_TREE, {
-      headers: { Accept: "application/vnd.github+json" },
-    });
-    if (!r.ok) {
-      throw new Error(`GitHub returned ${r.status} while loading the file list. Try again later.`);
-    }
-    const j = await r.json();
-    const paths = (j.tree || [])
-      .filter((x) => x.type === "blob" && /\.md$/i.test(x.path))
-      .map((x) => x.path);
-    rulesMdPaths = paths;
-    writeCachedRulesPaths(paths);
-    setRulesSearchStatus(`Indexed ${paths.length} Markdown files.`);
-  })().catch((e) => {
-    rulesIndexLoadPromise = null;
-    rulesMdPaths = null;
-    setRulesSearchStatus(e?.message || String(e), true);
-  });
-  return rulesIndexLoadPromise;
-}
-
-function refreshRulesIndex() {
-  rulesMdPaths = null;
-  rulesIndexLoadPromise = null;
-  if (!rulesUsesLocalClone()) {
-    try {
-      localStorage.removeItem(RULES_TREE_STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
-    setRulesSearchStatus("Cache cleared. Reloading file list from GitHub…");
-  } else {
-    rulesLocalFileMap = new Map();
-    setRulesSearchStatus("Re-scanning local folder…");
-  }
-  void ensureRulesIndexLoaded();
-}
-
-function rulesIncludeBestiaryChecked() {
-  return Boolean(document.getElementById("rulesIncludeBestiary")?.checked);
-}
-
-function rulesPathPassesBestiaryFilter(path) {
-  if (!path || typeof path !== "string") return false;
-  if (rulesIncludeBestiaryChecked()) return true;
-  const norm = path.replace(/\\/g, "/").toLowerCase();
-  return !norm.startsWith("bestiary/");
-}
-
-async function fetchCodeSearchPaths(query) {
-  const trimmed = query.trim().slice(0, 200);
-  if (trimmed.length < 2) return [];
-  const q = encodeURIComponent(`${trimmed} repo:${DATA_MD_REPO}`);
-  const url = `https://api.github.com/search/code?q=${q}&per_page=40`;
-  const r = await fetch(url, {
-    headers: { Accept: "application/vnd.github+json" },
-  });
-  if (!r.ok) return [];
-  const j = await r.json();
-  return (j.items || [])
-    .map((x) => x.path)
-    .filter((p) => typeof p === "string" && /\.md$/i.test(p) && rulesPathPassesBestiaryFilter(p));
-}
-
-async function searchLocalMarkdownBodies(query, maxHits = 55) {
-  const tokens = query
-    .trim()
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean);
-  if (!tokens.length || !rulesLocalFileMap?.size || !rulesMdPaths?.length) return [];
-  const paths = rulesMdPaths.filter(rulesPathPassesBestiaryFilter);
-  let cursor = 0;
-  const hits = [];
-  const concurrency = Math.min(10, paths.length || 1);
-
-  async function scanOne(path) {
-    const fh = rulesLocalFileMap.get(path);
-    if (!fh || typeof fh.getFile !== "function") return null;
-    const file = await fh.getFile();
-    let raw = await file.text();
-    if (raw.length > RULES_LOCAL_BODY_SCAN_MAX_CHARS) {
-      raw = raw.slice(0, RULES_LOCAL_BODY_SCAN_MAX_CHARS);
-    }
-    const text = raw.toLowerCase();
-    if (!tokens.every((t) => text.includes(t))) return null;
-    let score = 8;
-    const head = text.slice(0, 2500);
-    for (const t of tokens) {
-      if (head.includes(t)) score += 5;
-    }
-    return { p: path, score };
-  }
-
-  async function worker() {
-    while (hits.length < maxHits * 4) {
-      const idx = cursor++;
-      if (idx >= paths.length) break;
-      const row = await scanOne(paths[idx]);
-      if (row) hits.push(row);
-    }
-  }
-
-  await Promise.all(Array.from({ length: concurrency }, () => worker()));
-  hits.sort((a, b) => b.score - a.score || a.p.localeCompare(b.p));
-  return hits.slice(0, maxHits).map((x) => x.p);
-}
-
-function searchRulesPaths(query, limit = 100) {
-  const q = query.trim().toLowerCase();
-  if (!q || !rulesMdPaths?.length) return [];
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const scored = [];
-  for (const p of rulesMdPaths) {
-    if (!rulesPathPassesBestiaryFilter(p)) continue;
-    const low = p.toLowerCase();
-    const file = low.split("/").pop().replace(/\.md$/i, "");
-    const every = tokens.every((t) => low.includes(t) || file.includes(t));
-    if (!every) continue;
-    let score = 0;
-    for (const t of tokens) {
-      if (file.includes(t)) score += 12;
-      else if (low.includes(t)) score += 4;
-    }
-    score -= low.split("/").length * 0.15;
-    scored.push({ p, score });
-  }
-  scored.sort((a, b) => b.score - a.score || a.p.localeCompare(b.p));
-  return scored.slice(0, limit).map((x) => x.p);
-}
-
-function renderRulesResults(paths) {
-  const ul = document.getElementById("rulesResults");
-  if (!ul) return;
-  ul.innerHTML = "";
-  for (const p of paths) {
-    const li = document.createElement("li");
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "rules-result-btn";
-    btn.setAttribute("data-rules-path", p);
-    const file = p.split("/").pop() || p;
-    const dir = p.slice(0, Math.max(0, p.length - file.length - 1));
-    btn.innerHTML = `<span class="rules-result-title">${escapeHtml(file)}</span><span class="rules-result-path">${escapeHtml(dir ? `${dir}/` : "")}</span>`;
-    li.appendChild(btn);
-    ul.appendChild(li);
-  }
 }
 
 function escapeHtml(s) {
@@ -878,87 +543,186 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
-function renderRulesMarkdown(md) {
+/** Builds a one-line mechanical body string from an ability record. */
+function abilityToBody(a) {
+  const parts = [];
+  if (a.act) parts.push(`act: ${a.act}`);
+  if (a.cost) parts.push(`cost: ${a.cost}`);
+  if (a.rng) parts.push(`rng: ${a.rng}`);
+  if (a.vs) parts.push(`vs: ${a.vs}`);
+  if (a.pre) parts.push(`pre: ${a.pre}`);
+  if (a.eff) parts.push(`eff: ${a.eff}`);
+  return parts.join(" · ");
+}
+
+function buildRulesRecordsFromData(data) {
+  const records = [];
+  let n = 0;
+  const push = (title, sub, body) => {
+    records.push({ id: `r${n++}`, title: String(title || ""), sub: String(sub || ""), body: String(body || "") });
+  };
+
+  const abilities = data.abilities?.abilities;
+  if (Array.isArray(abilities)) {
+    for (const a of abilities) {
+      const kind = a.key ? `${a.kind} (key)` : a.kind || "";
+      push(a.name, [a.src, kind].filter(Boolean).join(" · "), abilityToBody(a));
+    }
+  }
+
+  const paths = data.paths;
+  if (Array.isArray(paths?.heroicPaths)) {
+    for (const p of paths.heroicPaths) {
+      const body = [
+        p.startSkill ? `start skill: ${p.startSkill}` : "",
+        p.keyTalent ? `key talent: ${p.keyTalent}` : "",
+        Array.isArray(p.specialties) ? `specialties: ${p.specialties.join(", ")}` : "",
+        p.theme || "",
+      ].filter(Boolean).join(" · ");
+      push(p.name, "heroic path", body);
+    }
+  }
+  if (Array.isArray(paths?.radiantOrders)) {
+    for (const o of paths.radiantOrders) {
+      push(o.name, "radiant order", Array.isArray(o.surges) ? `surges: ${o.surges.join(", ")}` : "");
+    }
+  }
+
+  const surges = data.surges?.surges;
+  if (Array.isArray(surges)) {
+    for (const s of surges) {
+      const orders = Array.isArray(s.orders) ? `orders: ${s.orders.join(", ")}` : "";
+      push(s.name, "surge", [s.gist, orders].filter(Boolean).join(" · "));
+    }
+  }
+
+  const ancestries = data.origins?.ancestries;
+  if (Array.isArray(ancestries)) {
+    for (const a of ancestries) push(a.name, "ancestry", a.mech || "");
+  }
+
+  const sys = data.system;
+  if (sys) {
+    if (Array.isArray(sys.attributes)) {
+      for (const at of sys.attributes) push(at.name, `attribute (${at.key})`, `category: ${at.category}`);
+    }
+    if (Array.isArray(sys.defenses)) {
+      for (const d of sys.defenses) push(d.name + " defense", "defense", d.formula || "");
+    }
+    if (Array.isArray(sys.resources)) {
+      for (const r of sys.resources) {
+        push(r.name, "resource", [r.maxFormula ? `max: ${r.maxFormula}` : "", r.note || ""].filter(Boolean).join(" · "));
+      }
+    }
+    if (Array.isArray(sys.skills)) {
+      for (const sk of sys.skills) push(sk.name, "skill", [`attr: ${sk.attr}`, sk.note || ""].filter(Boolean).join(" · "));
+    }
+  }
+
+  return records;
+}
+
+function ensureRulesIndexLoaded() {
+  if (rulesRecords?.length) return Promise.resolve();
+  if (rulesLoadPromise) return rulesLoadPromise;
+
+  rulesLoadPromise = (async () => {
+    setRulesSearchStatus("Loading local data/ index…");
+    const idxRes = await fetch("data/index.json");
+    if (!idxRes.ok) throw new Error(`Could not load data/index.json (HTTP ${idxRes.status}).`);
+    const index = await idxRes.json();
+    const files = index.files || {};
+    const data = {};
+    await Promise.all(
+      Object.entries(files).map(async ([key, name]) => {
+        const r = await fetch(`data/${name}`);
+        if (!r.ok) throw new Error(`Could not load data/${name} (HTTP ${r.status}).`);
+        data[key] = await r.json();
+      })
+    );
+    rulesRecords = buildRulesRecordsFromData(data);
+    setRulesSearchStatus(`Indexed ${rulesRecords.length} mechanics records. Type to filter.`);
+    renderRulesResults(rulesRecords);
+  })().catch((e) => {
+    rulesLoadPromise = null;
+    rulesRecords = null;
+    const msg = /Failed to fetch|NetworkError|HTTP/i.test(e?.message || "")
+      ? "Could not read the local data/ folder. Serve this folder over HTTP (e.g. run a local web server) rather than opening the file directly."
+      : e?.message || String(e);
+    setRulesSearchStatus(msg, true);
+  });
+  return rulesLoadPromise;
+}
+
+function refreshRulesIndex() {
+  rulesRecords = null;
+  rulesLoadPromise = null;
+  void ensureRulesIndexLoaded();
+}
+
+function searchRulesRecords(query, limit = 200) {
+  if (!rulesRecords?.length) return [];
+  const q = query.trim().toLowerCase();
+  if (!q) return rulesRecords.slice(0, limit);
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const scored = [];
+  for (const rec of rulesRecords) {
+    const title = rec.title.toLowerCase();
+    const hay = `${title} ${rec.sub.toLowerCase()} ${rec.body.toLowerCase()}`;
+    if (!tokens.every((t) => hay.includes(t))) continue;
+    let score = 0;
+    for (const t of tokens) {
+      if (title.includes(t)) score += 12;
+      else score += 3;
+    }
+    scored.push({ rec, score });
+  }
+  scored.sort((a, b) => b.score - a.score || a.rec.title.localeCompare(b.rec.title));
+  return scored.slice(0, limit).map((x) => x.rec);
+}
+
+function renderRulesResults(records) {
+  const ul = document.getElementById("rulesResults");
+  if (!ul) return;
+  ul.innerHTML = "";
+  for (const rec of records) {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "rules-result-btn";
+    btn.setAttribute("data-rules-id", rec.id);
+    btn.innerHTML = `<span class="rules-result-title">${escapeHtml(rec.title)}</span><span class="rules-result-path">${escapeHtml(rec.sub)}</span>`;
+    li.appendChild(btn);
+    ul.appendChild(li);
+  }
+}
+
+function openRulesRecord(id) {
   const el = document.getElementById("rulesDetail");
   if (!el) return;
+  const rec = rulesRecords?.find((r) => r.id === id);
+  if (!rec) return;
+  rulesActiveRecordId = id;
+  const md = `## ${rec.title}\n\n${rec.sub ? `*${rec.sub}*\n\n` : ""}${rec.body || ""}`;
   if (typeof marked !== "undefined" && typeof marked.parse === "function") {
     el.innerHTML = marked.parse(md, { mangle: false, headerIds: false });
   } else {
-    el.textContent = md;
+    el.textContent = `${rec.title}\n${rec.sub}\n\n${rec.body}`;
   }
-}
-
-async function openRulesDocument(relPath) {
-  const el = document.getElementById("rulesDetail");
-  if (!el || !relPath) return;
-  setRulesSearchStatus(`Loading ${relPath}…`);
-  try {
-    const fh = rulesLocalFileMap?.get(relPath);
-    if (fh && typeof fh.getFile === "function") {
-      const file = await fh.getFile();
-      const text = await file.text();
-      renderRulesMarkdown(text);
-      setRulesSearchStatus(`Showing ${relPath} (local)`);
-      el.scrollTop = 0;
-      return;
-    }
-    const r = await fetch(rawUrlFromPath(relPath));
-    if (!r.ok) {
-      setRulesSearchStatus(`Could not load file (HTTP ${r.status}).`, true);
-      return;
-    }
-    const text = await r.text();
-    renderRulesMarkdown(text);
-    setRulesSearchStatus(`Showing ${relPath}`);
-    el.scrollTop = 0;
-  } catch (e) {
-    setRulesSearchStatus(e?.message || String(e), true);
-  }
+  el.scrollTop = 0;
 }
 
 async function runRulesSearch() {
+  await ensureRulesIndexLoaded();
+  if (!rulesRecords?.length) return;
   const input = document.getElementById("rulesSearchInput");
   const q = input?.value?.trim() || "";
-  if (!q) {
-    setRulesSearchStatus("Enter a search term.", true);
-    return;
-  }
-  await ensureRulesIndexLoaded();
-  if (!rulesMdPaths?.length) return;
-  const pathHits = searchRulesPaths(q, 80);
-  let contentHits = [];
-  if (rulesUsesLocalClone() && rulesLocalFileMap?.size) {
-    setRulesSearchStatus("Searching local Markdown contents…");
-    try {
-      contentHits = await searchLocalMarkdownBodies(q, 55);
-    } catch {
-      /* ignore */
-    }
-  } else {
-    try {
-      contentHits = await fetchCodeSearchPaths(q);
-    } catch {
-      /* optional; path-only still useful */
-    }
-  }
-  const seen = new Set();
-  const merged = [];
-  for (const p of [...contentHits, ...pathHits]) {
-    if (seen.has(p)) continue;
-    seen.add(p);
-    merged.push(p);
-  }
-  const hits = merged.slice(0, 100);
+  const hits = searchRulesRecords(q, 200);
   renderRulesResults(hits);
-  const contentNote = contentHits.length
-    ? rulesUsesLocalClone()
-      ? " (includes full-text matches in your local clone)"
-      : " (includes content matches from GitHub search when available)"
-    : "";
   setRulesSearchStatus(
     hits.length
-      ? `${hits.length} matching file(s)${contentNote}. Click one to load the full text.`
-      : "No matching Markdown files. Try different keywords or shorter tokens.",
+      ? `${hits.length} matching record(s). Click one to see its mechanics.`
+      : "No matching records. Try different keywords.",
     false
   );
 }
@@ -968,10 +732,10 @@ function wireRulesSearchOnce() {
   if (!ul || ul.dataset.wired === "1") return;
   ul.dataset.wired = "1";
   ul.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-rules-path]");
+    const btn = e.target.closest("[data-rules-id]");
     if (!btn) return;
-    const path = btn.getAttribute("data-rules-path");
-    if (path) void openRulesDocument(path);
+    const id = btn.getAttribute("data-rules-id");
+    if (id) openRulesRecord(id);
   });
 }
 
@@ -1017,7 +781,6 @@ function setAppView(which) {
 
   if (which === "rules") {
     wireRulesSearchOnce();
-    updateRulesSourceUi();
     void ensureRulesIndexLoaded();
   }
 }
@@ -1427,8 +1190,8 @@ function wireTextareaAutosize(textarea) {
   if (!textarea || textarea.tagName !== "TEXTAREA") return;
   textarea.classList.add("textarea-autosize");
   const bump = () => sizeTextareaToContent(textarea);
-  if (!textarea.dataset.drawSteelAutosize) {
-    textarea.dataset.drawSteelAutosize = "1";
+  if (!textarea.dataset.cosmereAutosize) {
+    textarea.dataset.cosmereAutosize = "1";
     textarea.addEventListener("input", bump);
   }
   requestAnimationFrame(() => requestAnimationFrame(bump));
@@ -1439,7 +1202,7 @@ function activityLabel(value) {
 }
 
 function isTriggeredType(type) {
-  return type === "triggered" || type === "free-triggered";
+  return type === "reaction";
 }
 
 function bindFields() {
@@ -1447,86 +1210,186 @@ function bindFields() {
   fieldBindingsAbort = new AbortController();
   const { signal } = fieldBindingsAbort;
 
-  const heroicName = document.getElementById("heroicName");
-  const heroicCurrent = document.getElementById("heroicCurrent");
-  const victoryNotes = document.getElementById("victoryNotes");
-  const passiveNotes = document.getElementById("passiveNotes");
-
-  heroicName.value = state.heroicName;
-  heroicCurrent.value = state.heroicCurrent;
-  victoryNotes.value = state.victoryNotes;
-  passiveNotes.value = state.passiveNotes;
-
   const on = (el, ev, fn) => el.addEventListener(ev, fn, { signal });
 
-  const staminaCurrent = document.getElementById("staminaCurrent");
-  const staminaMax = document.getElementById("staminaMax");
-  const recoveriesCurrent = document.getElementById("recoveriesCurrent");
-  const recoveriesMax = document.getElementById("recoveriesMax");
-  const surgesCurrent = document.getElementById("surgesCurrent");
-  const fateCurrent = document.getElementById("fateCurrent");
-  const victoriesCurrent = document.getElementById("victoriesCurrent");
-
-  if (staminaCurrent && staminaMax) {
-    staminaCurrent.value = state.staminaCurrent;
-    staminaMax.value = state.staminaMax;
-    recoveriesCurrent.value = state.recoveriesCurrent;
-    recoveriesMax.value = state.recoveriesMax;
-    surgesCurrent.value = state.surgesCurrent;
-    fateCurrent.value = state.fateCurrent;
-    victoriesCurrent.value = state.victoriesCurrent;
-  }
-
-  on(heroicName, "input", () => {
-    state.heroicName = heroicName.value;
-    saveState();
-    renderPlayResourceStrip();
-  });
-  on(heroicCurrent, "input", () => {
-    state.heroicCurrent = heroicCurrent.value;
-    saveState();
-    renderPlayResourceStrip();
-  });
-  on(victoryNotes, "input", () => {
-    state.victoryNotes = victoryNotes.value;
-    saveState();
-  });
-  on(passiveNotes, "input", () => {
-    state.passiveNotes = passiveNotes.value;
-    saveState();
-  });
-
-  const bindTracker = (curEl, maxEl, curKey, maxKey) => {
-    on(curEl, "input", () => {
-      state[curKey] = curEl.value;
-      saveState();
-      renderPlayResourceStrip();
-    });
-    on(maxEl, "input", () => {
-      state[maxKey] = maxEl.value;
-      saveState();
-      renderPlayResourceStrip();
-    });
-  };
-
-  const bindCurrentOnly = (el, key) => {
+  /** Simple text/number input bound to a state key; refreshes the play strip on change. */
+  const bindSimple = (id, key, refreshStrip = false) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = state[key] ?? "";
     on(el, "input", () => {
       state[key] = el.value;
       saveState();
-      renderPlayResourceStrip();
+      if (refreshStrip) renderPlayResourceStrip();
     });
   };
 
-  if (staminaCurrent && staminaMax) {
-    bindTracker(staminaCurrent, staminaMax, "staminaCurrent", "staminaMax");
-    bindTracker(recoveriesCurrent, recoveriesMax, "recoveriesCurrent", "recoveriesMax");
-    bindCurrentOnly(surgesCurrent, "surgesCurrent");
-    bindCurrentOnly(fateCurrent, "fateCurrent");
-    bindCurrentOnly(victoriesCurrent, "victoriesCurrent");
+  // Text/number fields that map 1:1 to a state key with no side effect.
+  const SIMPLE_FIELDS = [
+    "characterName", "level", "playerName", "paths", "ancestry",
+    "recoveryDie", "deflect", "movement", "sensesRange", "liftingCapacity",
+    "weapons", "expertises", "conditions",
+    "appearance", "equipment", "marks", "purpose", "obstacle", "goals",
+    "connections", "otherAbilities", "characterNotes",
+    "radiantOrder", "sprenName", "sprenPersonality", "sprenBondRange",
+    "ideals", "surgesNotes", "resourceNotes", "passiveNotes",
+  ];
+  for (const id of SIMPLE_FIELDS) bindSimple(id, id);
+
+  // Resource pools refresh the play strip on change.
+  for (const id of ["healthCurrent", "healthMax", "focusCurrent", "focusMax", "investitureCurrent", "investitureMax"]) {
+    bindSimple(id, id, true);
   }
 
-  wireTextareaAutosize(victoryNotes);
-  wireTextareaAutosize(passiveNotes);
+  // Defenses refresh the play strip and the computed-vs-manual hints.
+  for (const d of DEFENSES) {
+    const el = document.getElementById(d.field);
+    if (!el) continue;
+    el.value = state[d.field] ?? "";
+    on(el, "input", () => {
+      state[d.field] = el.value;
+      saveState();
+      renderPlayResourceStrip();
+    });
+  }
+
+  document.querySelectorAll("#viewSheet textarea.textarea-autosize").forEach(wireTextareaAutosize);
+  updateDerivedHints();
+}
+
+/** Reads an attribute's numeric value, or null if blank/invalid. */
+function attrVal(key) {
+  return parseOptionalInt(state.attrs?.[key]);
+}
+
+/** 10 + sum of the two governing attributes, or null if either is unset. */
+function computedDefense(def) {
+  const vals = def.parts.map(attrVal);
+  if (vals.some((v) => v == null)) return null;
+  return 10 + vals.reduce((a, b) => a + b, 0);
+}
+
+/** Manual defense entry wins; otherwise fall back to the attribute formula. */
+function effectiveDefense(def) {
+  const manual = parseOptionalInt(state[def.field]);
+  return manual != null ? manual : computedDefense(def);
+}
+
+/**
+ * Refreshes "auto" placeholders (defenses, Health/Focus maxima) and the
+ * attribute + rank total beside each skill, from the current attribute values.
+ */
+function updateDerivedHints() {
+  for (const d of DEFENSES) {
+    const el = document.getElementById(d.field);
+    if (!el) continue;
+    const c = computedDefense(d);
+    el.placeholder = c != null ? `${c} (auto)` : `10+${d.parts.join("+")}`;
+  }
+  const str = attrVal("STR");
+  const hm = document.getElementById("healthMax");
+  if (hm) hm.placeholder = str != null ? `${10 + str} (auto)` : "max (10+STR)";
+  const wil = attrVal("WIL");
+  const fm = document.getElementById("focusMax");
+  if (fm) fm.placeholder = wil != null ? `${2 + wil} (auto)` : "max (2+WIL)";
+
+  document.querySelectorAll("[data-skill-total]").forEach((el) => {
+    const sk = SKILLS.find((s) => s.name === el.getAttribute("data-skill-total"));
+    if (!sk) return;
+    const a = attrVal(sk.attr);
+    const r = parseOptionalInt(state.skills?.[sk.name]);
+    el.textContent = a != null && r != null ? `+${a + r}` : "";
+  });
+}
+
+/** Builds the attribute inputs, grouped by category, bound to state.attrs. */
+function renderAttributes() {
+  const root = document.getElementById("attrGrid");
+  if (!root) return;
+  if (!state.attrs || typeof state.attrs !== "object") state.attrs = {};
+  root.innerHTML = "";
+  for (const cat of ["Physical", "Cognitive", "Spiritual"]) {
+    const col = document.createElement("div");
+    col.className = "attr-col";
+    const h = document.createElement("h3");
+    h.className = "subhead";
+    h.textContent = cat;
+    col.appendChild(h);
+    for (const at of ATTRIBUTES.filter((a) => a.cat === cat)) {
+      const lab = document.createElement("label");
+      lab.className = "attr-row";
+      const name = document.createElement("span");
+      name.className = "attr-name";
+      name.textContent = `${at.name} (${at.key})`;
+      const inp = document.createElement("input");
+      inp.type = "number";
+      inp.min = "0";
+      inp.max = "5";
+      inp.step = "1";
+      inp.placeholder = "0";
+      inp.value = state.attrs[at.key] ?? "";
+      inp.addEventListener("input", () => {
+        state.attrs[at.key] = inp.value;
+        saveState();
+        updateDerivedHints();
+        renderPlayResourceStrip();
+      });
+      lab.appendChild(name);
+      lab.appendChild(inp);
+      col.appendChild(lab);
+    }
+    root.appendChild(col);
+  }
+}
+
+/** Builds the skill rows (name · attr · rank · total), grouped by category. */
+function renderSkills() {
+  const root = document.getElementById("skillsGrid");
+  if (!root) return;
+  if (!state.skills || typeof state.skills !== "object") state.skills = {};
+  root.innerHTML = "";
+  const catOf = (attr) => ATTRIBUTES.find((a) => a.key === attr)?.cat;
+  for (const cat of ["Physical", "Cognitive", "Spiritual"]) {
+    const col = document.createElement("div");
+    col.className = "skill-col";
+    const h = document.createElement("h3");
+    h.className = "subhead";
+    h.textContent = cat;
+    col.appendChild(h);
+    for (const sk of SKILLS.filter((s) => catOf(s.attr) === cat)) {
+      const row = document.createElement("label");
+      row.className = "skill-row";
+      const name = document.createElement("span");
+      name.className = "skill-name";
+      name.textContent = sk.name;
+      const attr = document.createElement("span");
+      attr.className = "skill-attr";
+      attr.textContent = sk.attr;
+      const inp = document.createElement("input");
+      inp.type = "number";
+      inp.min = "0";
+      inp.max = "5";
+      inp.step = "1";
+      inp.className = "skill-rank";
+      inp.placeholder = "0";
+      inp.value = state.skills[sk.name] ?? "";
+      const total = document.createElement("span");
+      total.className = "skill-total";
+      total.setAttribute("data-skill-total", sk.name);
+      inp.addEventListener("input", () => {
+        state.skills[sk.name] = inp.value;
+        saveState();
+        updateDerivedHints();
+      });
+      row.appendChild(name);
+      row.appendChild(attr);
+      row.appendChild(inp);
+      row.appendChild(total);
+      col.appendChild(row);
+    }
+    root.appendChild(col);
+  }
+  updateDerivedHints();
 }
 
 function parseOptionalInt(s) {
@@ -1603,7 +1466,6 @@ function renderPlayResourceStrip() {
   }
 
   const h2 = panel.querySelector("h2");
-  const heroicNameTrim = (state.heroicName || "").trim();
 
   if (!playMode) {
     if (strip) strip.remove();
@@ -1620,55 +1482,31 @@ function renderPlayResourceStrip() {
 
   strip.replaceChildren();
 
-  const heroicDisplay = parseOptionalInt(state.heroicCurrent) ?? 0;
-  const bar = document.createElement("div");
-  bar.id = "heroicBar";
-  bar.className = "heroic-bar";
-
-  const nameEl = document.createElement("span");
-  nameEl.className = "name";
-  nameEl.textContent = heroicNameTrim || "Resource";
-  bar.appendChild(nameEl);
-
-  const trackEl = document.createElement("span");
-  trackEl.className = "track";
-  trackEl.textContent = String(heroicDisplay);
-  bar.appendChild(trackEl);
-
-  const hMinus = document.createElement("button");
-  hMinus.type = "button";
-  hMinus.className = "btn tiny";
-  hMinus.textContent = "−";
-  hMinus.addEventListener("click", () => {
-    const base = parseOptionalInt(state.heroicCurrent) ?? 0;
-    state.heroicCurrent = String(Math.max(0, base - 1));
-    syncStateInput("heroicCurrent", state.heroicCurrent);
-    saveState();
-    renderPlayResourceStrip();
-  });
-  const hPlus = document.createElement("button");
-  hPlus.type = "button";
-  hPlus.className = "btn tiny";
-  hPlus.textContent = "+";
-  hPlus.addEventListener("click", () => {
-    const base = parseOptionalInt(state.heroicCurrent) ?? 0;
-    state.heroicCurrent = String(base + 1);
-    syncStateInput("heroicCurrent", state.heroicCurrent);
-    saveState();
-    renderPlayResourceStrip();
-  });
-  bar.appendChild(hMinus);
-  bar.appendChild(hPlus);
-
-  strip.appendChild(bar);
-
   for (const row of RESOURCE_PLAY_ROWS) {
     appendFixedResourceBar(strip, row);
+  }
+
+  if (DEFENSES.some((d) => effectiveDefense(d) != null)) {
+    const defRow = document.createElement("div");
+    defRow.className = "resource-track-bar defense-bar";
+    const label = document.createElement("span");
+    label.className = "name";
+    label.textContent = "Defenses";
+    defRow.appendChild(label);
+    for (const d of DEFENSES) {
+      const v = effectiveDefense(d);
+      const chip = document.createElement("span");
+      chip.className = "def-chip";
+      chip.textContent = `${d.label[0]} ${v != null ? v : "—"}`;
+      chip.title = `${d.label} defense`;
+      defRow.appendChild(chip);
+    }
+    strip.appendChild(defRow);
   }
 }
 
 function sortAbilities(list) {
-  const order = { action: 0, maneuver: 1, move: 2, triggered: 3, "free-triggered": 4, other: 5 };
+  const order = { "1a": 0, "2a": 1, "3a": 2, reaction: 3, free: 4, passive: 5, other: 6 };
   return [...list].sort((a, b) => {
     const oa = order[a.activity] ?? 99;
     const ob = order[b.activity] ?? 99;
@@ -1689,7 +1527,7 @@ function renderAbilities() {
     empty.className = "hint";
     empty.textContent = playMode
       ? "No abilities yet. Turn off Play mode and tap “Add ability”."
-      : "List main actions, maneuvers, moves, and triggered abilities from your class (Draw Steel Heroes). Use the Rules tab to search Steel Compendium markdown, or enter names and copy tier outcomes from your class abilities.";
+      : "List the actions, reactions, and passives you reach for: general combat actions plus your path/order talents. Use the Reference tab to look up the local mechanics, then jot a terse note here.";
     root.appendChild(empty);
     return;
   }
@@ -1754,7 +1592,7 @@ function renderPlayCard(ab) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "btn" + (ab.usedThisRound ? " ghost" : "");
-    btn.textContent = ab.usedThisRound ? "Marked used this round" : "Mark used (non-free triggered)";
+    btn.textContent = ab.usedThisRound ? "Reaction used this round" : "Mark used (uses your reaction)";
     btn.addEventListener("click", () => {
       ab.usedThisRound = !ab.usedThisRound;
       saveState();
@@ -1802,11 +1640,11 @@ function renderEditCard(ab) {
   row2.className = "row";
 
   const costLab = document.createElement("label");
-  costLab.innerHTML = "Cost / frequency (optional)";
+  costLab.innerHTML = "Cost (optional)";
   const costIn = document.createElement("input");
   costIn.type = "text";
   costIn.value = ab.cost;
-  costIn.placeholder = "Main action, maneuver, move, or spend (heroic resource, Recovery, Piety, etc.)—per ability text";
+  costIn.placeholder = "Resource spend, e.g. 1F (Focus), 1I (Investiture), or blank";
   costLab.appendChild(costIn);
 
   const rtLab = document.createElement("label");
@@ -1814,25 +1652,25 @@ function renderEditCard(ab) {
   const rtIn = document.createElement("input");
   rtIn.type = "text";
   rtIn.value = ab.rangeTargets;
-  rtIn.placeholder = "Melee 1, Ranged N, Burst, Cube, Line… (squares; per ability)";
+  rtIn.placeholder = "reach, melee, N ft, self · vs Physical/Cognitive/Spiritual";
   rtLab.appendChild(rtIn);
 
   row2.appendChild(costLab);
   row2.appendChild(rtLab);
 
   const trigLab = document.createElement("label");
-  trigLab.innerHTML = "Trigger (for triggered abilities)";
+  trigLab.innerHTML = "Trigger (for reactions)";
   const trigIn = document.createElement("input");
   trigIn.type = "text";
   trigIn.value = ab.trigger;
-  trigIn.placeholder = "When the trigger event occurs (wording from the ability; Combat: one non-free triggered per round)";
+  trigIn.placeholder = "When the trigger event occurs (one reaction per round)";
   trigLab.appendChild(trigIn);
 
   const notesLab = document.createElement("label");
   notesLab.innerHTML = "Combat notes (short)";
   const notesIn = document.createElement("textarea");
   notesIn.value = ab.notes;
-  notesIn.placeholder = "Power roll tiers (≤11 / 12–16 / 17+), damage types, riders, stability, forced movement, edges/banes—per ability text";
+  notesIn.placeholder = "Terse mechanics: dice, damage type, conditions applied, duration (EONT/SONT), riders";
   notesLab.appendChild(notesIn);
 
   const checkWrap = document.createElement("label");
@@ -1841,7 +1679,7 @@ function renderEditCard(ab) {
   check.type = "checkbox";
   check.checked = !!ab.nonFreeTriggered;
   checkWrap.appendChild(check);
-  checkWrap.appendChild(document.createTextNode("Uses non-free triggered budget (max 1/round)"));
+  checkWrap.appendChild(document.createTextNode("Uses your reaction (one per round)"));
 
   const formActions = document.createElement("div");
   formActions.className = "form-actions";
@@ -1887,20 +1725,14 @@ function renderEditCard(ab) {
   return wrap;
 }
 
-function applyConduitPreset() {
+function applyWarriorPreset() {
+  // Any non-empty string field in state (every defaultState scalar is a string) counts as data.
+  const hasFieldData = Object.keys(defaultState()).some(
+    (k) => typeof state[k] === "string" && state[k].trim() !== ""
+  );
   const hasData =
     state.abilities.length > 0 ||
-    (state.heroicName || "").trim() !== "" ||
-    (state.heroicCurrent || "").trim() !== "" ||
-    (state.staminaCurrent || "").trim() !== "" ||
-    (state.staminaMax || "").trim() !== "" ||
-    (state.recoveriesCurrent || "").trim() !== "" ||
-    (state.recoveriesMax || "").trim() !== "" ||
-    (state.surgesCurrent || "").trim() !== "" ||
-    (state.fateCurrent || "").trim() !== "" ||
-    (state.victoriesCurrent || "").trim() !== "" ||
-    (state.victoryNotes || "").trim() !== "" ||
-    (state.passiveNotes || "").trim() !== "" ||
+    hasFieldData ||
     (state.scratchCanvases || []).some(
       (pg) =>
         (typeof pg.notesText === "string" && pg.notesText.trim() !== "") ||
@@ -1911,18 +1743,15 @@ function applyConduitPreset() {
   if (
     hasData &&
     !confirm(
-      "Replace your heroic fields, victory/passive notes, and the entire ability list with the Conduit preset? (Export JSON first if you want a backup.)"
+      "Replace your resource fields, notes, and the entire ability list with the Warrior example? (Export JSON first if you want a backup.)"
     )
   ) {
     return;
   }
 
-  const p = CONDUIT_PRESET;
-  state.heroicName = p.heroicName;
-  state.heroicCurrent = p.heroicCurrent;
-  state.victoryNotes = p.victoryNotes;
-  state.passiveNotes = p.passiveNotes;
-  state.abilities = p.abilities.map((row) => ({
+  const { abilities, ...fields } = WARRIOR_PRESET;
+  Object.assign(state, fields);
+  state.abilities = abilities.map((row) => ({
     id: uid(),
     name: row.name,
     activity: row.activity,
@@ -1936,6 +1765,8 @@ function applyConduitPreset() {
 
   saveState();
   bindFields();
+  renderAttributes();
+  renderSkills();
   renderPlayResourceStrip();
   renderAbilities();
 }
@@ -1944,7 +1775,7 @@ function addAbility() {
   state.abilities.push({
     id: uid(),
     name: "",
-    activity: "action",
+    activity: "1a",
     cost: "",
     rangeTargets: "",
     trigger: "",
@@ -1960,6 +1791,14 @@ function setPlayMode(on) {
   document.body.classList.toggle("play-mode", on);
   document.getElementById("btnPlay").setAttribute("aria-pressed", on ? "true" : "false");
   document.getElementById("btnEdit").setAttribute("aria-pressed", on ? "false" : "true");
+  // Entering play mode collapses the granular sections (skills, gear, details,
+  // radiant). Edit mode leaves them as the user set them, so the page can start
+  // collapsed and stay that way until a section is opened.
+  if (on) {
+    document.querySelectorAll("#viewSheet [data-collapsible]").forEach((d) => {
+      d.open = false;
+    });
+  }
   renderPlayResourceStrip();
   renderAbilities();
 }
@@ -1976,7 +1815,7 @@ function exportJson() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "draw-steel-character.json";
+  a.download = "cosmere-character.json";
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -1988,10 +1827,6 @@ function importJson(file) {
       const data = JSON.parse(reader.result);
       const importHadInkLayout = Object.prototype.hasOwnProperty.call(data, "scratchInkLayout");
       state = { ...defaultState(), ...data, abilities: Array.isArray(data.abilities) ? data.abilities : [] };
-      delete state.heroicMax;
-      delete state.surgesMax;
-      delete state.fateMax;
-      delete state.victoriesMax;
       migrateLegacyScratchToCanvases(state);
       if (!importHadInkLayout) {
         migrateScratchInkDoubleCanvasHeight(state);
@@ -2001,6 +1836,8 @@ function importJson(file) {
       bindFields();
       bindScratchNotesField();
       syncNotesUiFromState();
+      renderAttributes();
+      renderSkills();
       renderPlayResourceStrip();
       renderAbilities();
     } catch {
@@ -2011,7 +1848,7 @@ function importJson(file) {
 }
 
 document.getElementById("btnAddAbility").addEventListener("click", addAbility);
-document.getElementById("btnConduitPreset").addEventListener("click", applyConduitPreset);
+document.getElementById("btnWarriorPreset").addEventListener("click", applyWarriorPreset);
 document.getElementById("btnPlay").addEventListener("click", () => setPlayMode(true));
 document.getElementById("btnEdit").addEventListener("click", () => setPlayMode(false));
 document.getElementById("btnResetRound").addEventListener("click", resetRound);
@@ -2038,14 +1875,11 @@ document.getElementById("tabNotes")?.addEventListener("click", () => setAppView(
 document.getElementById("tabRules")?.addEventListener("click", () => setAppView("rules"));
 document.getElementById("btnRulesSearch")?.addEventListener("click", () => void runRulesSearch());
 document.getElementById("btnRulesRefreshIndex")?.addEventListener("click", () => refreshRulesIndex());
-document.getElementById("btnRulesChooseFolder")?.addEventListener("click", () => void chooseRulesLocalFolder());
-document.getElementById("btnRulesUseGithub")?.addEventListener("click", () => void useGithubForRules());
 document.getElementById("rulesSearchInput")?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") void runRulesSearch();
 });
-document.getElementById("rulesIncludeBestiary")?.addEventListener("change", () => {
-  const q = document.getElementById("rulesSearchInput")?.value?.trim();
-  if (q) void runRulesSearch();
+document.getElementById("rulesSearchInput")?.addEventListener("input", () => {
+  if (rulesRecords?.length) void runRulesSearch();
 });
 document.getElementById("btnNotesType")?.addEventListener("click", () => applyNotesComposeMode("type", true));
 document.getElementById("btnNotesInk")?.addEventListener("click", () => applyNotesComposeMode("ink", true));
@@ -2105,6 +1939,8 @@ document.getElementById("btnDeleteScratchCanvas")?.addEventListener("click", () 
 });
 
 bindFields();
+renderAttributes();
+renderSkills();
 bindScratchNotesField();
 wireScratchCanvasSelectOnce();
 wireRulesSearchOnce();
@@ -2112,4 +1948,3 @@ setupNotesPageResizeObserver();
 syncNotesUiFromState();
 setPlayMode(false);
 void initBackupFileHandle();
-void initRulesLocalDirHandle().then(() => updateRulesSourceUi());

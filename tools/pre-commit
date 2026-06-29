@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# Git pre-commit hook: run the verbatim guard before allowing a commit.
+# Install once with:   git config core.hooksPath tools
+# (or copy this file to .git/hooks/pre-commit and chmod +x it).
+#
+# Blocks the commit if committed data echoes the source PDF (exit 1).
+# If the source hasn't been extracted locally (exit 2), it warns and allows
+# the commit — contributors without the PDF can still work on app code.
+
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+set +e
+bash "$ROOT/tools/check-verbatim.sh"
+code=$?
+set -e
+
+case "$code" in
+  0) exit 0 ;;
+  2) echo "pre-commit: verbatim guard skipped (no local extraction). Proceeding." >&2
+     exit 0 ;;
+  *) echo "pre-commit: blocked by verbatim guard. Fix the data above, then re-commit." >&2
+     exit 1 ;;
+esac

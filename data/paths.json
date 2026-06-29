@@ -1,0 +1,23 @@
+{
+  "note": "Path facts (name, starting skill, specialties, key-talent name) are mechanics. 'theme' is our own paraphrase, not the book's wording.",
+  "heroicPaths": [
+    { "key": "agent",   "name": "Agent",   "startSkill": "Insight",    "specialties": ["Investigator", "Spy", "Thief"],        "keyTalent": "Opportunist",      "theme": "Problem-solver working by wits or sleight of hand." },
+    { "key": "envoy",   "name": "Envoy",   "startSkill": "Discipline", "specialties": ["Diplomat", "Faithful", "Mentor"],      "keyTalent": "Rousing Presence", "theme": "Social operator who sways others." },
+    { "key": "hunter",  "name": "Hunter",  "startSkill": "Perception", "specialties": ["Archer", "Assassin", "Tracker"],       "keyTalent": "Seek Quarry",      "theme": "Ranged/outdoors specialist who tracks and removes threats." },
+    { "key": "leader",  "name": "Leader",  "startSkill": "Leadership", "specialties": ["Champion", "Officer", "Politico"],     "keyTalent": "Decisive Command", "theme": "Commander who buffs and directs allies." },
+    { "key": "scholar", "name": "Scholar", "startSkill": "Lore",       "specialties": ["Artifabrian", "Strategist", "Surgeon"], "keyTalent": "Erudition",        "theme": "Planner and builder; flexible knowledge." },
+    { "key": "warrior", "name": "Warrior", "startSkill": "Athletics",  "specialties": ["Duelist", "Shardbearer", "Soldier"],   "keyTalent": "Vigilant Stance",  "theme": "Front-line fighter via skill, might, or willpower." }
+  ],
+  "radiantOrders": [
+    { "key": "dustbringer",  "name": "Dustbringer",  "surges": ["Division", "Abrasion"] },
+    { "key": "edgedancer",   "name": "Edgedancer",   "surges": ["Abrasion", "Progression"] },
+    { "key": "elsecaller",   "name": "Elsecaller",   "surges": ["Transportation", "Transformation"] },
+    { "key": "lightweaver",  "name": "Lightweaver",  "surges": ["Illumination", "Transformation"] },
+    { "key": "skybreaker",   "name": "Skybreaker",   "surges": ["Gravitation", "Division"] },
+    { "key": "stoneward",    "name": "Stoneward",    "surges": ["Cohesion", "Tension"] },
+    { "key": "truthwatcher", "name": "Truthwatcher", "surges": ["Progression", "Illumination"] },
+    { "key": "windrunner",   "name": "Windrunner",   "surges": ["Adhesion", "Gravitation"] },
+    { "key": "willshaper",   "name": "Willshaper",   "surges": ["Transportation", "Cohesion"] },
+    { "key": "bondsmith",    "name": "Bondsmith",    "surges": ["Tension", "Adhesion"] }
+  ]
+}

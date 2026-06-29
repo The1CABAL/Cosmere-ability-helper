@@ -17,3 +17,12 @@ Desktop.ini
 
 # Local clone of Steel Compendium rules (clone separately or use Rules tab + GitHub)
 data-md-main/
+
+# Source rulebook PDF — NEVER commit (copyright + personalized watermark)
+*.pdf
+Cosmere_RPG_Stormlight_Handbook.pdf
+
+# Local-only raw text extracted from the PDF. NEVER commit: this is verbatim
+# copyrighted prose and carries the buyer's watermark. Only paraphrased,
+# mechanics-only data under data/ is allowed into git. See tools/extract.sh.
+raw/
