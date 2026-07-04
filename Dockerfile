@@ -4,6 +4,7 @@ FROM nginx:1.27-alpine
 # Static assets
 COPY index.html styles.css app.js /usr/share/nginx/html/
 COPY data/ /usr/share/nginx/html/data/
+COPY assets/ /usr/share/nginx/html/assets/
 
 # nginx serves on 80 by default
 EXPOSE 80

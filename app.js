@@ -1991,45 +1991,246 @@ function exportJson() {
   URL.revokeObjectURL(a.href);
 }
 
-function getActiveAppView() {
-  if (!document.getElementById("viewSheet")?.classList.contains("is-hidden")) return "sheet";
-  if (!document.getElementById("viewNotes")?.classList.contains("is-hidden")) return "notes";
-  if (!document.getElementById("viewRules")?.classList.contains("is-hidden")) return "rules";
-  return "sheet";
+/* ---------------------------------------------------------------------------
+   Official character-sheet export
+   Loads the bundled fillable Stormlight sheet (SL020), populates its AcroForm
+   fields from the current character, and downloads a print-ready PDF. Uses
+   pdf-lib (loaded from CDN in index.html).
+   --------------------------------------------------------------------------- */
+const OFFICIAL_SHEET_URL = "assets/stormlight-character-sheet.pdf";
+
+// App attribute keys -> PDF text-field names.
+const ATTR_PDF_FIELD = {
+  STR: "Strength",
+  SPD: "Speed",
+  INT: "Intellect",
+  WIL: "Willpower",
+  AWA: "Awareness",
+  PRE: "Presence",
+};
+
+// Most skills share the same PDF text-field and rank-checkbox names. The two
+// weaponry skills differ: the modifier box reads "…Weapons" but the pip
+// checkboxes read "…Weaponry".
+const SKILL_PDF_OVERRIDES = {
+  "Light Weaponry": { tx: "Light Weapons", rank: "Light Weaponry" },
+  "Heavy Weaponry": { tx: "Heavy Weapons", rank: "Heavy Weaponry" },
+};
+
+// Ideal checkboxes as named in the PDF (note: "3rd" carries a trailing space).
+const IDEAL_CHECK_FIELDS = [
+  "check 1st ideal",
+  "check 2nd ideal",
+  "check 3rd ideal ",
+  "check 4th ideal",
+  "check 5th ideal",
+];
+
+function nonEmptyLines(s) {
+  return String(s ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
 }
 
-// Print a clean, paper-friendly copy of the sheet. Renders in Play mode (formatted
-// ability cards + resource strip read better than the edit forms) with every
-// collapsible section expanded, then restores the prior UI state afterward.
-function printSheet() {
-  const prevView = getActiveAppView();
-  const prevPlay = document.body.classList.contains("play-mode");
-  const sections = Array.from(
-    document.querySelectorAll("#viewSheet details[data-collapsible]")
-  );
-  const prevOpen = sections.map((s) => s.open);
+async function fillOfficialSheet() {
+  const btn = document.getElementById("btnFillSheet");
+  if (typeof PDFLib === "undefined") {
+    alert("The PDF library didn't load. Check your connection and reload the page.");
+    return;
+  }
 
-  if (prevView !== "sheet") setAppView("sheet");
-  if (!prevPlay) setPlayMode(true);
-  sections.forEach((s) => (s.open = true));
+  const prevLabel = btn ? btn.textContent : "";
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Building PDF…";
+  }
 
-  let restored = false;
-  const restore = () => {
-    if (restored) return;
-    restored = true;
-    window.removeEventListener("afterprint", restore);
-    sections.forEach((s, i) => (s.open = prevOpen[i]));
-    if (!prevPlay) setPlayMode(false);
-    if (prevView !== "sheet") setAppView(prevView);
-  };
-  window.addEventListener("afterprint", restore);
+  try {
+    const res = await fetch(OFFICIAL_SHEET_URL);
+    if (!res.ok) throw new Error(`Couldn't load the blank sheet (HTTP ${res.status}).`);
+    const bytes = await res.arrayBuffer();
 
-  // Give the DOM a frame to lay out the re-rendered (play-mode) sheet before printing.
-  requestAnimationFrame(() => {
-    window.print();
-    // Safety net in case a browser doesn't fire afterprint.
-    setTimeout(restore, 1000);
-  });
+    const pdf = await PDFLib.PDFDocument.load(bytes);
+    const form = pdf.getForm();
+    const fieldNames = new Set(form.getFields().map((f) => f.getName()));
+
+    // The header vitals/attributes/defenses repeat on both sheet pages, stored as
+    // "<name>.Page 1" / "<name>.Page 2". Resolve a logical name to whichever
+    // concrete field(s) exist so both pages get filled.
+    const resolve = (name) => {
+      if (fieldNames.has(name)) return [name];
+      return [`${name}.Page 1`, `${name}.Page 2`].filter((n) => fieldNames.has(n));
+    };
+
+    // Field helpers — every access is guarded so one unexpected field name can't
+    // abort the whole export; skips are logged for debugging.
+    const setText = (name, value) => {
+      const v = (value == null ? "" : String(value)).trim();
+      if (!v) return;
+      const targets = resolve(name);
+      if (!targets.length) {
+        console.warn(`Sheet field "${name}" not found; skipped.`);
+        return;
+      }
+      for (const t of targets) {
+        try {
+          form.getTextField(t).setText(v);
+        } catch (e) {
+          console.warn(`Sheet field "${t}" skipped:`, e.message);
+        }
+      }
+    };
+    const check = (name) => {
+      const targets = resolve(name);
+      if (!targets.length) {
+        console.warn(`Sheet checkbox "${name}" not found; skipped.`);
+        return;
+      }
+      for (const t of targets) {
+        try {
+          form.getCheckBox(t).check();
+        } catch (e) {
+          console.warn(`Sheet checkbox "${t}" skipped:`, e.message);
+        }
+      }
+    };
+
+    // Vitals
+    setText("Character Name", state.characterName);
+    setText("Player Name", state.playerName);
+    setText("Level", state.level);
+    setText("Paths", state.paths);
+    setText("Ancestry", state.ancestry);
+
+    // Attributes
+    for (const [key, field] of Object.entries(ATTR_PDF_FIELD)) {
+      setText(field, state.attrs?.[key]);
+    }
+
+    // Defenses — manual entry wins, else the 10 + a + b formula the app shows.
+    setText("Physical Defense", effectiveDefense(DEFENSES[0]));
+    setText("Cognitive Defense", effectiveDefense(DEFENSES[1]));
+    setText("Spiritual Defense", effectiveDefense(DEFENSES[2]));
+
+    // Resources — fall back to the same auto maxima the app hints (10+STR, 2+WIL).
+    const str = attrVal("STR");
+    const wil = attrVal("WIL");
+    setText("Health Maximum", state.healthMax || (str != null ? 10 + str : ""));
+    setText("Health Current", state.healthCurrent);
+    setText("Focus Maximum", state.focusMax || (wil != null ? 2 + wil : ""));
+    setText("Focus Current", state.focusCurrent);
+    setText("Investiture Maximum 4", state.investitureMax);
+    setText("Investiture Current 4", state.investitureCurrent);
+    setText("Recovery Die", state.recoveryDie);
+
+    // Skills — modifier box (attribute + rank) and rank pips 1..rank.
+    for (const sk of SKILLS) {
+      const map = SKILL_PDF_OVERRIDES[sk.name] || { tx: sk.name, rank: sk.name };
+      const a = attrVal(sk.attr);
+      const r = parseOptionalInt(state.skills?.[sk.name]);
+      if (a != null && r != null) setText(map.tx, a + r);
+      if (r != null) {
+        for (let i = 1; i <= r; i++) check(`${map.rank} Rank ${i}`);
+      }
+    }
+
+    // Combat & gear
+    setText("Deflect", state.deflect);
+    setText("Movement", state.movement);
+    setText("Senses Range", state.sensesRange);
+    setText("Lifting Capacity", state.liftingCapacity);
+    setText("Weapons", state.weapons);
+    setText("Expertises 1", state.expertises);
+    setText("Conditions", state.conditions);
+
+    // Character details
+    setText("Character Appearance", state.appearance);
+    setText("Armor & Equipment", state.equipment);
+    setText("Spheres", state.marks);
+    setText("Purpose", state.purpose);
+    setText("Obstacle", state.obstacle);
+    setText("Connections", state.connections);
+
+    // Goals — one per line into Goal 1..9.
+    nonEmptyLines(state.goals)
+      .slice(0, 9)
+      .forEach((g, i) => setText(`Goal ${i + 1}`, g));
+
+    // Talents boxes carry the ability list plus any freeform "other" talents,
+    // spread across the three boxes so long lists don't clip.
+    const abilityLines = sortAbilities(state.abilities).map((ab) => {
+      const head = [ab.name || "(unnamed)", `[${activityLabel(ab.activity)}]`];
+      if (ab.cost) head.push(`cost ${ab.cost}`);
+      const tail = [ab.rangeTargets, ab.trigger, ab.notes].filter(Boolean).join(" · ");
+      return tail ? `${head.join(" ")} — ${tail}` : head.join(" ");
+    });
+    const talentLines = [...nonEmptyLines(state.otherAbilities), ...abilityLines];
+    const perBox = Math.ceil(talentLines.length / 3);
+    ["Talents 1", "Talents 2", "Talents 3"].forEach((field, i) => {
+      const chunk = perBox ? talentLines.slice(i * perBox, (i + 1) * perBox) : [];
+      if (chunk.length) setText(field, chunk.join("\n"));
+    });
+
+    // Notes box — character notes plus the app-only reminder fields, which have
+    // no dedicated slot on the official sheet, each labeled so nothing is lost.
+    const noteBlocks = [];
+    if (String(state.characterNotes ?? "").trim()) noteBlocks.push(state.characterNotes.trim());
+    if (String(state.resourceNotes ?? "").trim()) noteBlocks.push(`Resources: ${state.resourceNotes.trim()}`);
+    if (String(state.passiveNotes ?? "").trim()) noteBlocks.push(`Passives: ${state.passiveNotes.trim()}`);
+    setText("Notes", noteBlocks.join("\n\n"));
+
+    // Radiant
+    setText("Radiant Order", state.radiantOrder);
+    setText("Spren Name", state.sprenName);
+    setText("Personality", state.sprenPersonality);
+    setText("Spren Bond Range", state.sprenBondRange);
+
+    // Ideals — the 1st Ideal is preprinted (checkbox only); remaining lines fill
+    // the 2nd..5th Ideal boxes and tick their checkboxes.
+    const ideals = nonEmptyLines(state.ideals);
+    const idealFields = ["2nd Ideal", "3rd Ideal", "4th Ideal", "5th Ideal"];
+    if (ideals.length) check(IDEAL_CHECK_FIELDS[0]);
+    ideals.slice(0, 4).forEach((line, i) => {
+      setText(idealFields[i], line);
+      check(IDEAL_CHECK_FIELDS[i + 1]);
+    });
+    setText("Surge Talents", state.surgesNotes);
+
+    // A few of the sheet's boxes are rich-text fields; pdf-lib can't regenerate
+    // appearances for those when saving, so downgrade every text field to plain
+    // text first (harmless for fields we filled).
+    for (const f of form.getFields()) {
+      if (typeof f.disableRichFormatting === "function") {
+        try {
+          f.disableRichFormatting();
+        } catch (e) {
+          console.warn(`Could not plain-text "${f.getName()}":`, e.message);
+        }
+      }
+    }
+
+    const out = await pdf.save();
+    const base =
+      (state.characterName || "cosmere-character")
+        .trim()
+        .replace(/[^\w.-]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "cosmere-character";
+    const blob = new Blob([out], { type: "application/pdf" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${base}-sheet.pdf`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch (e) {
+    console.error(e);
+    alert(`Could not build the character sheet PDF.\n\n${e.message}`);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = prevLabel;
+    }
+  }
 }
 
 function importJson(file) {
@@ -2064,7 +2265,7 @@ document.getElementById("btnWarriorPreset").addEventListener("click", applyWarri
 document.getElementById("btnPlay").addEventListener("click", () => setPlayMode(true));
 document.getElementById("btnEdit").addEventListener("click", () => setPlayMode(false));
 document.getElementById("btnResetRound").addEventListener("click", resetRound);
-document.getElementById("btnPrint").addEventListener("click", printSheet);
+document.getElementById("btnFillSheet").addEventListener("click", () => void fillOfficialSheet());
 document.getElementById("btnChooseBackup").addEventListener("click", () => void chooseBackupFile());
 document.getElementById("btnStopBackup").addEventListener("click", () => void stopBackupFile());
 document.getElementById("btnDownloadOnce").addEventListener("click", exportJson);

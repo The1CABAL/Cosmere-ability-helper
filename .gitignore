@@ -22,6 +22,11 @@ data-md-main/
 *.pdf
 Cosmere_RPG_Stormlight_Handbook.pdf
 
+# Exception: the official blank Stormlight character sheet is bundled as an app
+# asset so the "Fill official sheet" export can populate it. This is the freely
+# distributed, un-watermarked fillable form (SL020) — safe to commit.
+!assets/stormlight-character-sheet.pdf
+
 # Local-only raw text extracted from the PDF. NEVER commit: this is verbatim
 # copyrighted prose and carries the buyer's watermark. Only paraphrased,
 # mechanics-only data under data/ is allowed into git. See tools/extract.sh.

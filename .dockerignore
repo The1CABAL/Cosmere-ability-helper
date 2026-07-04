@@ -3,6 +3,7 @@
 .idea
 .vscode
 *.pdf
+!assets/stormlight-character-sheet.pdf
 raw/
 data-md-main/
 tools/
