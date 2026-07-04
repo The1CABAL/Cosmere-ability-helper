@@ -1,8 +1,27 @@
 # Data schema — Cosmere RPG combat/ability helper
 
 This folder holds the **only** rulebook-derived data allowed in git. It is a
-**mechanics-only, paraphrased index** of the *Cosmere RPG: Stormlight Handbook*.
-The source PDF and its raw extraction (`raw/`) stay local and are gitignored.
+**mechanics-only, paraphrased index** of the *Cosmere RPG* handbooks. The source
+PDFs and their raw extraction (`raw/`, `raw/<ruleset>/`) stay local and gitignored.
+
+## Rulesets (multiple books)
+
+The pipeline is **ruleset-aware** so more than one similarly-structured book can
+live side by side:
+
+- `data/rulesets.json` — registry the browser reads: each ruleset's `id`, `name`,
+  `released` flag, `base` folder, and `index` filename.
+- `tools/rulesets.sh` — the matching registry for the tools (PDF, watermark, raw
+  and data folders per book). Add a ruleset in **both** places.
+- **Stormlight** predates this and stays flat: its files are directly under
+  `data/` and its raw text under `raw/`.
+- **Every later book is namespaced**, e.g. `data/mistborn/` + `raw/mistborn/`.
+  The Mistborn Handbook is registered as an unreleased scaffold
+  (`data/mistborn/index.json` with empty `files`) so the app can list it as
+  "coming soon" until the book ships and its data is paraphrased in.
+
+Everything below describes the files **within one ruleset's folder** (identical
+schema for each book).
 
 ## What may and may not go here
 
@@ -77,7 +96,12 @@ doing it wrong — and the guard will reject it.
 
 ## Workflow to add data
 
+Default ruleset is Stormlight; prefix with `RULESET=<id>` for another book.
+
 1. `tools/extract.sh [firstPage lastPage]` → updates local `raw/` (never committed).
-2. Read the relevant `raw/*.txt` section; paraphrase each option into a record above.
-3. `tools/check-verbatim.sh` → must print OK before committing.
-4. Bump `version` in `index.json`.
+   - Mistborn: `RULESET=mistborn tools/extract.sh [firstPage lastPage]` → `raw/mistborn/`.
+2. Read the relevant raw `*.txt` section; paraphrase each option into a record above,
+   writing into that ruleset's data folder (`data/` for Stormlight, `data/mistborn/` …).
+3. `tools/check-verbatim.sh` → checks every ruleset; must print OK before committing.
+4. Bump `version` in that ruleset's `index.json` (and register the ruleset in both
+   `data/rulesets.json` and `tools/rulesets.sh` if it's new).

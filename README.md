@@ -61,6 +61,11 @@ The pipeline that produces it keeps the source local:
   consecutive words of `data/` also appear in the source. This makes
   "no verbatim text" an enforced invariant, not a promise. Install it as a
   pre-commit hook with `git config core.hooksPath tools`.
+- `tools/rulesets.sh` — registry of the supported books. The pipeline is
+  **ruleset-aware**: `RULESET=mistborn tools/extract.sh` extracts the (unreleased)
+  Mistborn Handbook into `raw/mistborn/`, and the guard checks every ruleset
+  against its own source. The browser mirrors this via `data/rulesets.json`, so
+  the Reference tab shows a **ruleset picker** once more than one book exists.
 
 See **[data/SCHEMA.md](data/SCHEMA.md)** for the data format and the workflow to
 extend coverage. Bring your own legally-obtained PDF; none is distributed here.
