@@ -1,0 +1,22 @@
+{
+  "manifest": "cosmere-rulesets",
+  "version": "1.0.0",
+  "description": "Registry of rulesets the Reference tab can load. Each entry points at a per-ruleset index.json (same schema as SCHEMA.md). Mirrors the tool-side registry in tools/rulesets.sh. Not affiliated with Brandon Sanderson, Dragonsteel, or Brotwise Games.",
+  "default": "stormlight",
+  "rulesets": [
+    {
+      "id": "stormlight",
+      "name": "Stormlight Handbook",
+      "released": true,
+      "base": "",
+      "index": "index.json"
+    },
+    {
+      "id": "mistborn",
+      "name": "Mistborn Handbook",
+      "released": false,
+      "base": "mistborn/",
+      "index": "index.json"
+    }
+  ]
+}

@@ -4,9 +4,13 @@
 # Install once with:   git config core.hooksPath tools
 # (or copy this file to .git/hooks/pre-commit and chmod +x it).
 #
-# Blocks the commit if committed data echoes the source PDF (exit 1).
-# If the source hasn't been extracted locally (exit 2), it warns and allows
-# the commit — contributors without the PDF can still work on app code.
+# With no RULESET set, check-verbatim.sh checks EVERY registered ruleset
+# (Stormlight, Mistborn, …) against its own extracted source, so this one hook
+# covers all books at once.
+#
+# Blocks the commit if committed data echoes a source PDF (exit 1).
+# If no source has been extracted locally for any book (exit 2), it warns and
+# allows the commit — contributors without a PDF can still work on app code.
 
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

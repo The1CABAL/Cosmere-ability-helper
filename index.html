@@ -352,6 +352,12 @@
           </p>
         </header>
         <div class="rules-toolbar">
+          <label class="field rules-ruleset-field">
+            <span class="label">Ruleset</span>
+            <!-- Populated from data/rulesets.json at load; lets the user pick which
+                 book's mechanics to browse (Stormlight, Mistborn when released, …). -->
+            <select id="rulesRulesetSelect" aria-label="Ruleset"></select>
+          </label>
           <label class="field rules-search-field">
             <span class="label">Search</span>
             <div class="inline rules-search-inline">

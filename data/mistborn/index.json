@@ -1,0 +1,10 @@
+{
+  "dataset": "cosmere-rpg-mistborn",
+  "version": "0.0.0",
+  "description": "Placeholder index for the not-yet-released Cosmere RPG Mistborn Handbook. No data files yet — this scaffold lets the Reference tab list Mistborn and show a 'coming soon' state without erroring. Populate `files` (system/origins/paths/etc., same schema as SCHEMA.md) once the book ships and tools/extract.sh RULESET=mistborn has produced local raw text to paraphrase from. Not affiliated with Brandon Sanderson, Dragonsteel, or Brotwise Games.",
+  "files": {},
+  "coverage": {
+    "complete": [],
+    "todo": ["everything — book unreleased; awaiting source to paraphrase from"]
+  }
+}

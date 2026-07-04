@@ -903,6 +903,20 @@ body:not(.play-mode) .play-only-inline {
   margin-bottom: 0;
 }
 
+/* Ruleset picker (Stormlight / Mistborn / …). Hidden by JS when only one exists. */
+.rules-ruleset-field {
+  flex: 0 1 200px;
+  margin-bottom: 0;
+}
+
+.rules-ruleset-field.is-hidden {
+  display: none;
+}
+
+.rules-ruleset-field select {
+  width: 100%;
+}
+
 .rules-search-inline {
   width: 100%;
 }

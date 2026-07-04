@@ -522,8 +522,22 @@ let scratchInkCurrentStroke = null;
 let notesPageResizeObserver = null;
 
 /* —— Reference tab: searches the local mechanics-only data/ index (no external fetch). —— */
+//
+// MULTI-RULESET: the tab can browse more than one book. data/rulesets.json lists
+// the available rulesets (Stormlight today, Mistborn once it ships) and each
+// points at its own index.json under data/<base>. This mirrors the tool-side
+// registry in tools/rulesets.sh so the two never drift. The picker in the
+// toolbar switches the active ruleset; records for each are cached so flipping
+// back and forth doesn't refetch.
 
-/** In-memory records: { id, title, sub, body }. */
+/** Loaded data/rulesets.json: { default, rulesets: [{id,name,released,base,index}] }, or null. */
+let rulesetsManifest = null;
+/** Id of the ruleset currently shown in the Reference tab. */
+let rulesActiveRulesetId = "";
+/** Per-ruleset cache: id -> { records, sourceLine, emptyMsg }. Avoids refetching on switch. */
+const rulesCacheByRuleset = new Map();
+
+/** In-memory records for the ACTIVE ruleset: { id, title, sub, body }. */
 let rulesRecords = null;
 let rulesLoadPromise = null;
 let rulesActiveRecordId = "";
@@ -640,39 +654,170 @@ function buildRulesRecordsFromData(data) {
   return records;
 }
 
+/** One-line "which book am I looking at" note under the toolbar. */
+function setRulesSourceLine(text) {
+  const el = document.getElementById("rulesSourceLine");
+  if (el) el.textContent = text || "";
+}
+
+/**
+ * Loads data/rulesets.json once. If it is missing (older deploys predate
+ * multi-ruleset support), fall back to a single implicit Stormlight ruleset
+ * rooted at data/ so the tab keeps working unchanged.
+ */
+async function loadRulesetsManifest() {
+  if (rulesetsManifest) return rulesetsManifest;
+  try {
+    const res = await fetch("data/rulesets.json");
+    if (res.ok) {
+      const m = await res.json();
+      if (Array.isArray(m?.rulesets) && m.rulesets.length) {
+        rulesetsManifest = m;
+        return m;
+      }
+    }
+  } catch {
+    /* network/parse error -> fall through to the legacy single-ruleset shape */
+  }
+  // Legacy fallback: treat data/ as one unnamed Stormlight book (base "").
+  rulesetsManifest = {
+    default: "stormlight",
+    rulesets: [{ id: "stormlight", name: "Stormlight Handbook", released: true, base: "", index: "index.json" }],
+  };
+  return rulesetsManifest;
+}
+
+/** Look up a ruleset entry by id from the loaded manifest. */
+function getRuleset(id) {
+  return rulesetsManifest?.rulesets.find((r) => r.id === id) || null;
+}
+
+/**
+ * Fills the toolbar's ruleset <select> from the manifest and settles on an
+ * active ruleset. Hides the picker when there's only one book (no choice).
+ */
+async function populateRulesetSelector() {
+  const sel = document.getElementById("rulesRulesetSelect");
+  if (!sel) return;
+  const manifest = await loadRulesetsManifest();
+
+  // With a single ruleset there is nothing to pick — hide the control.
+  const field = sel.closest(".rules-ruleset-field");
+  if (field) field.classList.toggle("is-hidden", manifest.rulesets.length < 2);
+
+  sel.innerHTML = "";
+  for (const r of manifest.rulesets) {
+    const opt = document.createElement("option");
+    opt.value = r.id;
+    // Be honest about books that aren't out yet.
+    opt.textContent = r.released ? r.name : `${r.name} (coming soon)`;
+    sel.appendChild(opt);
+  }
+  if (!rulesActiveRulesetId) rulesActiveRulesetId = manifest.default || manifest.rulesets[0].id;
+  sel.value = rulesActiveRulesetId;
+}
+
+/**
+ * Ensures the ACTIVE ruleset's records are loaded and rendered. Serves from the
+ * per-ruleset cache when possible; otherwise fetches that ruleset's index.json
+ * (under data/<base>) and every data file it lists. Unreleased / unpopulated
+ * books (empty `files`) resolve to a friendly placeholder rather than an error.
+ */
 function ensureRulesIndexLoaded() {
-  if (rulesRecords?.length) return Promise.resolve();
+  // Cache hit: this ruleset was already indexed — reuse it, no fetch.
+  const cached = rulesCacheByRuleset.get(rulesActiveRulesetId);
+  if (cached) {
+    rulesRecords = cached.records;
+    setRulesSourceLine(cached.sourceLine);
+    if (!rulesRecords.length) {
+      setRulesSearchStatus(cached.emptyMsg || "No records for this ruleset yet.");
+      renderRulesResults([]);
+    } else {
+      const q = document.getElementById("rulesSearchInput")?.value?.trim() || "";
+      renderRulesResults(searchRulesRecords(q, 200));
+      setRulesSearchStatus(`Indexed ${rulesRecords.length} mechanics records. Type to filter.`);
+    }
+    return Promise.resolve();
+  }
   if (rulesLoadPromise) return rulesLoadPromise;
 
   rulesLoadPromise = (async () => {
-    setRulesSearchStatus("Loading local data/ index…");
-    const idxRes = await fetch("data/index.json");
-    if (!idxRes.ok) throw new Error(`Could not load data/index.json (HTTP ${idxRes.status}).`);
+    const manifest = await loadRulesetsManifest();
+    const id = rulesActiveRulesetId || manifest.default || manifest.rulesets[0].id;
+    rulesActiveRulesetId = id;
+    const rs = getRuleset(id) || manifest.rulesets[0];
+    const base = rs.base || "";          // e.g. "" for Stormlight, "mistborn/" for Mistborn
+    const indexName = rs.index || "index.json";
+
+    setRulesSearchStatus(`Loading ${rs.name}…`);
+    const idxRes = await fetch(`data/${base}${indexName}`);
+    if (!idxRes.ok) throw new Error(`Could not load data/${base}${indexName} (HTTP ${idxRes.status}).`);
     const index = await idxRes.json();
     const files = index.files || {};
+
+    // No data files yet — typical for a not-yet-released book's scaffold index.
+    // Cache a placeholder so we don't refetch, and tell the user why it's empty.
+    if (!Object.keys(files).length) {
+      const emptyMsg = rs.released
+        ? "This ruleset has no mechanics indexed yet."
+        : `${rs.name} isn't out yet — no mechanics to browse. It'll fill in once the book ships.`;
+      const sourceLine = `Ruleset: ${rs.name}${index.version ? ` · v${index.version}` : ""} · no data yet`;
+      rulesCacheByRuleset.set(id, { records: [], sourceLine, emptyMsg });
+      rulesRecords = [];
+      setRulesSourceLine(sourceLine);
+      setRulesSearchStatus(emptyMsg);
+      renderRulesResults([]);
+      return;
+    }
+
+    // Load every data file for this ruleset; paths are relative to its base.
     const data = {};
     await Promise.all(
       Object.entries(files).map(async ([key, name]) => {
-        const r = await fetch(`data/${name}`);
-        if (!r.ok) throw new Error(`Could not load data/${name} (HTTP ${r.status}).`);
+        const r = await fetch(`data/${base}${name}`);
+        if (!r.ok) throw new Error(`Could not load data/${base}${name} (HTTP ${r.status}).`);
         data[key] = await r.json();
       })
     );
-    rulesRecords = buildRulesRecordsFromData(data);
-    setRulesSearchStatus(`Indexed ${rulesRecords.length} mechanics records. Type to filter.`);
-    renderRulesResults(rulesRecords);
-  })().catch((e) => {
-    rulesLoadPromise = null;
-    rulesRecords = null;
-    const msg = /Failed to fetch|NetworkError|HTTP/i.test(e?.message || "")
-      ? "Could not read the local data/ folder. Serve this folder over HTTP (e.g. run a local web server) rather than opening the file directly."
-      : e?.message || String(e);
-    setRulesSearchStatus(msg, true);
-  });
+    const records = buildRulesRecordsFromData(data);
+    const sourceLine = `Ruleset: ${rs.name}${index.version ? ` · v${index.version}` : ""} · ${records.length} records`;
+    rulesCacheByRuleset.set(id, { records, sourceLine, emptyMsg: "" });
+    rulesRecords = records;
+    setRulesSourceLine(sourceLine);
+    setRulesSearchStatus(`Indexed ${records.length} mechanics records. Type to filter.`);
+    renderRulesResults(records);
+  })()
+    .catch((e) => {
+      rulesRecords = null;
+      const msg = /Failed to fetch|NetworkError|HTTP/i.test(e?.message || "")
+        ? "Could not read the local data/ folder. Serve this folder over HTTP (e.g. run a local web server) rather than opening the file directly."
+        : e?.message || String(e);
+      setRulesSearchStatus(msg, true);
+    })
+    .finally(() => {
+      // Clear the in-flight guard; a successful load is now served from cache.
+      rulesLoadPromise = null;
+    });
   return rulesLoadPromise;
 }
 
+/** Switches the active ruleset and (re)loads its records. */
+function switchRuleset(id) {
+  if (!id || id === rulesActiveRulesetId) return;
+  rulesActiveRulesetId = id;
+  rulesActiveRecordId = "";
+  rulesRecords = null;
+  rulesLoadPromise = null;
+  const detail = document.getElementById("rulesDetail");
+  if (detail) detail.innerHTML = "";
+  const input = document.getElementById("rulesSearchInput");
+  if (input) input.value = "";
+  void ensureRulesIndexLoaded();
+}
+
+/** Drops the active ruleset's cache and reloads it from disk. */
 function refreshRulesIndex() {
+  rulesCacheByRuleset.delete(rulesActiveRulesetId);
   rulesRecords = null;
   rulesLoadPromise = null;
   void ensureRulesIndexLoaded();
@@ -747,14 +892,21 @@ async function runRulesSearch() {
 
 function wireRulesSearchOnce() {
   const ul = document.getElementById("rulesResults");
-  if (!ul || ul.dataset.wired === "1") return;
-  ul.dataset.wired = "1";
-  ul.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-rules-id]");
-    if (!btn) return;
-    const id = btn.getAttribute("data-rules-id");
-    if (id) openRulesRecord(id);
-  });
+  if (ul && ul.dataset.wired !== "1") {
+    ul.dataset.wired = "1";
+    ul.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-rules-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-rules-id");
+      if (id) openRulesRecord(id);
+    });
+  }
+  // Ruleset picker: switch which book the Reference tab is browsing.
+  const sel = document.getElementById("rulesRulesetSelect");
+  if (sel && sel.dataset.wired !== "1") {
+    sel.dataset.wired = "1";
+    sel.addEventListener("change", () => switchRuleset(sel.value));
+  }
 }
 
 function setAppView(which) {
@@ -799,7 +951,8 @@ function setAppView(which) {
 
   if (which === "rules") {
     wireRulesSearchOnce();
-    void ensureRulesIndexLoaded();
+    // Populate the ruleset picker first (settles the active ruleset), then load it.
+    void populateRulesetSelector().then(() => ensureRulesIndexLoaded());
   }
 }
 
