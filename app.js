@@ -2217,11 +2217,18 @@ async function fillOfficialSheet() {
         .replace(/[^\w.-]+/g, "-")
         .replace(/^-+|-+$/g, "") || "cosmere-character";
     const blob = new Blob([out], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    a.href = url;
     a.download = `${base}-sheet.pdf`;
+    a.rel = "noopener";
+    // Anchor must be in the document for the download to fire in some browsers,
+    // and the object URL must outlive the click — revoking it immediately can
+    // cancel the download of a large (multi-MB) blob before it starts.
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(a.href);
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
   } catch (e) {
     console.error(e);
     alert(`Could not build the character sheet PDF.\n\n${e.message}`);
